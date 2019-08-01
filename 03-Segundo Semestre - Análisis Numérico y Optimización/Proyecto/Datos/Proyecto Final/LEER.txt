@@ -1,0 +1,17 @@
+Carpeta Eficiencia: 
+-Res2 y result: contienen los resultados del modelo DEA con rendimientos constantes
+-Res2_variable: contienen los resultados del modelo DEA con rendimientos variables
+
+Carpeta Estados de Resultados: Datos en los cuales se extrae la información de los estados de resultados
+de los 12 meses del año del 2016 cuya fuente es CNBV su serie historica http://portafoliodeinformacion.cnbv.gob.mx/bm1/Paginas/boletines.aspx
+
+Carpeta Meses: Bases ya filtradas de los bacos por meses
+
+Eficiencia_escala: gráfico html
+Eficiencia_técnica_pura_RST_CONSTANTE : gráfico html
+Eficiencia_técnica_pura_RST_VARIABLE : gráfico html
+
+OBSERVACIONES.xlsx: Bases de todos los meses depurada, es la que se utiliza para estimar DEA
+
+Proyecto Final Hairo Ulises Miranda Belmonte.pdf: documento final
+Proyecto Final Hairo Ulises Miranda Belmonte.r: script del documento final
