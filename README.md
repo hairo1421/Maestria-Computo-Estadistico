@@ -2,13 +2,13 @@
 Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
 # Propedeutico
-* Matemáticas
-* Programación 
-* Estadística 
+* Programación en C
+
 
 # Primer Semestre
 ### Inferencia Estadística 
-* Proyecto: 
+* Proyecto: El filtro de Kalman y su aplicación como método de
+imputación.
 ### Programación y Análisis de Algoritmos
 * Proyecto: Estimación del error estándar para la construcción de
 intervalos de confianza mediante la técnica Boostrap
@@ -24,7 +24,8 @@ computacional
 * Tarea 4
 * Tarea 5
 * Tarea 6
-* Proyecto : 
+* Proyecto : Estadística Multivariada
+ANALISIS DE ESTADISTICAS DE BEISBOL. Proyecto realizado con Angel Dominguez de CIMAT Monterrey
 * Examen:
 ### Análisis Numérico y Optimización 
 
