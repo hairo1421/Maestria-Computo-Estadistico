@@ -1,0 +1,1726 @@
+---
+title: "Tarea 2  Estadística Multivariada"
+author: "Hairo Ulises Miranda Belmonte"
+date: "07 de Febrero del 2019"
+output:
+  html_document:
+    code_folding: hide #echo=TRUE hide code its default
+    
+    toc: true
+    toc_float: true
+    # number_sections: true
+    theme: readable
+    highlight: textmate 
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+       
+    
+---
+
+
+
+EJERCICIO 1
+---------------
+
+Ejercicios de las Notas
+
+EJERCICIO 1.1 Diap. 283
+---------------
+
+Calcula las probabilidades mencionadas arriba.
+```{r}
+rm(list = ls())
+xbarra <- 80.3
+x0 <- 80
+discrepancia <- xbarra - x0
+```
+
+Se observa que la probabilidad de que aparezca el valor de $80.3$ u otro, es muy baja con varianza
+de .1
+```{r}
+1-pnorm(80.3, 80, sqrt(.1))
+```
+La probabilidad de que aparezca el valor de $80.3$ u otro es muy baja con varianza
+de $0.20$ no se ve tan imposible 
+```{r}
+1-pnorm(80.3, 80, sqrt(.29))
+```
+
+caso $1$ varianza de $0.1$
+```{r}
+caso1 <- (xbarra - x0)/.1
+caso1 > qnorm(.95)
+```
+Con un nvel de significancia del 95% se tiene evidencia suficiente de rechazar Ho
+```{r}
+pvalorCaso1 <- 1-pnorm(caso1)
+pvalorCaso1 < .05
+```
+Utilizando el p-valor, se tiene evidencia suficiente para rechazar la $H_{0}$
+
+Caso 2 varianza de .29
+```{r}
+caso2 <- (xbarra - x0)/sqrt(.29/10)
+caso2 > qnorm(.95)
+```
+A un nvel de significancia del $95%$ se tiene evidencia suficiente de rechazar $H_{0}$.
+Sin embargo, no es muy contundente la diferencia del valor $z$ observado.
+
+Ahora, con un nivel de confiabilidad mayor, se tiene el siguiente resultado:
+```{r}
+caso2 > qnorm(.975)
+```
+Al $97.5%$ de significancia, no se tiene evidencia suficiente para rechazar la $H_{0}$.
+Utilizando el p-valor:
+```{r}
+pvalorCaso2 <- 1-pnorm(caso2)
+pvalorCaso2 < .05
+```
+Como se puede observar, se tiene evidencia suficiente para rechazar la $H_{0}$. Sin embargo
+si no se es muy estricto, se podría no rechazar la hipótesis nula.
+Con menor nivel de confiabilidad, se tiene:
+```{r}
+pvalorCaso2 < .1
+```
+Con .1 de insignificancia ya se tiene evidencia suficiente para no rechazar la hipótesis nula.
+
+
+Construcción de intervalos de confianza; caso 1:
+```{r}
+caso1IC <- c(xbarra - 1.96*(.1), xbarra + 1.96*(.1))
+```
+Intervalo de confianza para el caso 2:
+```{r}
+caso2IC <- c(xbarra - 1.96*(sqrt(.29/10)), xbarra + 1.96*(sqrt(.29/10)))
+```
+Por lo tanto, el primer intervalo no contiene al valor del parámetro (bajo la hipótesis nula)
+y el segundo intervalo de confianza sí lo contiene.
+
+EJERCICIO 1.2 Diap. 346
+---------------
+Construir esas gráficas para este caso particular:
+
+Refresquemos las hipotesis del problema:
+$H_{0} : \mu \geq 35$  vs  $H_{A}: \mu < 35$
+y hagamos la prueba al nivel de $10\%$.
+
+```{r}
+rm(list = ls())
+H0 <- 35
+alpha <- .1
+s2est <- 30.8523
+n <- 20
+barx <- 32.90450
+```
+Prueba de hipótesis:
+```{r}
+
+z <- (sqrt(n)*(barx - H0))/(sqrt(s2est))
+z < (-qt(.9,19))
+```
+Tenemos evidencia suficiente para reazar la nule
+aun nivel del 10% 
+
+Con $\alpha =  0.05$
+```{r}
+z < (-qt(1-.05,19))
+```
+No se puede rechazar la hipótesis nula al 0.05 de insignificancia.
+
+Potencia de los valores
+```{r}
+H0 <- 32
+alpha <- .1
+s2est <- 30.8523
+sest <- sqrt(s2est)
+n <- 20
+Ha <- 35
+t <- qt(.1, 19)
+```
+Potencia de la prueba con $\alpha =  0.1$
+```{r}
+HaSeq <- seq(30, 40, .01)
+EstPrueba <- -t - ((sqrt(n)*(Ha - H0))/ sest)
+powerbeta <- pt(abs(EstPrueba), n-1)
+
+plot(HaSeq,1-pt(-t - ((sqrt(n)*(HaSeq  - H0))/ sest), n-1), type = "l", ylab="p", main = "power function", xlab = "")
+abline(.5, 0)
+abline(.1, 0, col="red")
+```
+Potencia de la prueba con $\alpha =  0.05$
+
+```{r}
+t2 <- qt(.05, 19)
+EstPrueba2 <- -t2 - ((sqrt(n)*(Ha - H0))/ sest)
+powerbeta2 <- pt(abs(EstPrueba2), n-1)
+
+
+plot(HaSeq,1-pt(-t2 - ((sqrt(n)*(HaSeq  - H0))/ sest), n-1), type = "l", ylab="p", main = "power function", xlab ="")
+abline(.5, 0)
+abline(.05, 0, col="red")
+```
+Comparando funciones poder respecto a variaciones en el nivel de significancia.
+```{r}
+plot(HaSeq,1-pt(-t - ((sqrt(n)*(HaSeq  - H0))/ sest), n-1), type = "l", ylab="p", main = "power function")
+lines(HaSeq,1-pt(-t2 - ((sqrt(n)*(HaSeq  - H0))/ sest), n-1), type = "l")
+abline(.05, 0, col="red")
+abline(.1, 0, col="red")
+```
+
+EJERCICIO 1.3 Diap. 352
+---------------
+
+Ejercicio: Realiza una prueba de nivel $\alpha = 0.01$ para las siguientes hipotesis: $_{0} : \sigma^{2} = 8$ vs $H_{A}: \sigma^{2} < 8$   a partir del archivo datvar.txt.
+
+a) Verifica inicialmente normalidad y concluye sobre la plausibilidad de lamisma en este conjunto de datos.
+```{r}
+rm(list = ls())
+datavar <- read.csv("C:/Users/h_air/Desktop/CIMAT MCE/Semestre_1/Inferencia Estadística/Tareas/Tarea 6/datvar.txt", header=FALSE)
+```
+PASO 1. REVISAR QUE LA MUESTRA PROVENGA DE UNA NORMAL
+```{r}
+shapiro.test(datavar$V2)
+```
+Se observa el estadistico se acerca a uno, de esta manera, se puede decir que la muestra proviene de una normal.
+
+Contrastando contra la prueba de jarquer bera en normalidad sobre la hipótesis nula.
+```{r}
+suppressMessages(library(fBasics))
+jarqueberaTest(datavar$V2)
+```
+ Ho Normalidad, No se tiene evidencia suficiente para rechazar la nula
+```{r}
+suppressMessages(library(ggplot2))
+V2 <- datavar$V2
+ggplot(as.data.frame(datavar$V2), aes( "", V2)) + geom_boxplot()
+```
+Se observa un poco de sesgo, cargada un poco a la derecha. También se puede ver, como su valor medio se encuentra un poco cargado.
+```{r}
+suppressMessages(library(fBasics))
+qqnormPlot(datavar$V2)
+
+g = datavar$V2
+m<-mean(g)
+std<-sqrt(var(g))
+hist(g, density=10, breaks=10, prob=TRUE, 
+     xlab="x-variable", 
+     main="normal curve over histogram")
+curve(dnorm(x, mean=m, sd=std), 
+      col="darkblue", lwd=2, add=TRUE, yaxt="n")
+```
+Los datos tratan de aproximar a la normal. Sin embargo
+tanto en colas, y ligeramente en el centro, no lo logran en su totalidad. Se concluye que se trabaja con el supuesto de normalidad. Siendo así, conocemos la distribución del estadístico de prueba. A su vez, podemos fijar regiones de rechazo y calcular p-valores dada las
+hipótesis que estemos considerando
+
+Para el siguiente set de datos se realiza lo anterior.
+```{r}
+shapiro.test(datavar$V1)
+```
+p value muy pequeño, pero puede deberce al tamaño de muestra el estadístico es cercano a uno, no estaría rechazando la nula. Sin embargo, no se tiene aún evidencia suficiente.
+
+```{r}
+jarqueberaTest(datavar$V1)
+```
+$H_{0}$ Normalidad, No se tiene evidencia suficiente para rechazar la $H_{0}$
+```{r}
+V1 <- datavar$V1
+ggplot(as.data.frame(datavar$V1), aes( "", V1)) + geom_boxplot()
+```
+Se observa un poco de sesgo, y varios valores a tipicos, con una ediana centrada
+```{r}
+suppressMessages(library(fBasics))
+qqnormPlot(datavar$V1)
+
+g = datavar$V2
+m<-mean(g)
+std<-sqrt(var(g))
+hist(g, density=10, breaks=10, prob=TRUE, 
+     xlab="x-variable", 
+     main="normal curve over histogram")
+curve(dnorm(x, mean=m, sd=std), 
+      col="darkblue", lwd=2, add=TRUE, yaxt="n")
+```
+Se concluye que se cumple el supuesto de normalidad.
+
+b) Utiliza el estadístico discutido en este capítulo y el que se presenta además en el capítuloo anterior cuando la población no es normal.
+ 
+```{r}
+sigma2H0 <- 8 
+alpha <- 0.01
+n <- length(V1)
+s2est <- var(datavar$V1)
+# estadístico de prueba 1
+u <- ((n-1)*s2est)/sigma2H0
+# estadístico de prueba 2
+d<- kurtosis(V1)
+d <- d[1]
+c <- (1+ .5*d)^(-.5)
+u2 <- (c*(n-1)*s2est)/sigma2H0
+
+```
+Se realiza prueba de hipótesis contrastando con valores críticos y pvalores
+```{r}
+# estadístico de prueba 1
+criticalValue <-qchisq(1-.01,n-1)
+u < criticalValue
+```
+Se rechaza la hipótesis nula de que la varianza sea igual a 8. Utilizando el estadístico de prueba  que asume normalidad.
+
+Con el otro estadistico de prueba para distribuciones arbitrarias, se tiene:
+```{r}
+# estadístico de prueba 2
+criticalValue2 <-qchisq(1-.01,c*(n-1))
+u2 < criticalValue2
+```
+También rechazando la hipótesis nula.
+
+c) Calcula la potencia de la prueba para valores del cociente 1.5, 2, 2.5, 3.
+```{r}
+sigma2H0.sigma2Ha <- c(3, 2.5, 2,1.5)
+```
+
+```{r}
+# estadístico de prueba 1
+chi<-qchisq(.99,n-1)
+
+power<-sapply(sigma2H0.sigma2Ha, powerFunction <- function(x) {
+  1-pchisq(chi*x, n-1)
+})
+plot(power)
+```
+
+```{r}
+# estadístico de prueba 1
+chi<-qchisq(.99,c*(n-1))
+power<-sapply(sigma2H0.sigma2Ha, powerFunction <- function(x) {
+  1-pchisq(chi*x, n-1)
+})
+plot(power)
+
+```
+
+EJERCICIO 1.4 Diap. 371
+---------------
+
+
+Ejercicio: Supongamos que queremos aplicar Jackknife en otras 3 situaciones:
+
+  
+1) Supongamos que queremos estimar theta = mu. >Que pasara si usamos la
+media muestral (theta.hat = xbar)?  
+```{r}
+  rm(list = ls())
+library("knitr")
+#datos
+x <- c(3.56, 0.69, 0.10, 1.84, 3.93, 1.25, 0.18, 1.13, 0.27, 0.50,
+       0.67, 0.01, 0.61, 0.82, 1.70, 0.39, 0.11, 1.20, 1.21, 0.72)
+
+jack <- numeric(length(x)-1)  #Vector con observación menos una
+pseudo <- numeric(length(x))  #Pseudo valores para bjack 
+T <- numeric(length(x))       
+
+for (i in 1:length(x)){ 
+  for (j in 1:length(x)){
+    if(j < i) jack[j] <- x[j] 
+    else if(j > i) jack[j-1] <- x[j]
+  } 
+  # estadístico es el error estandar jacknife de la i-esima muestra
+  T[i]<- mean(jack)
+  pseudo[i] <- length(x)*mean(x) -(length(x)-1)*mean(jack) 
+  
+}
+# estadístico de la media con iesima muestra jack
+T   #T_{(-i)}
+n <- length(x)
+# media muestral sin corregir por sesgo 
+mediaMuestral <- mean(x)
+
+# promedio de los pseudovalores, es el estimado por jacknife
+# corregido por sesgo
+TJackmean <- mean(pseudo)
+
+# sesgo
+bjack <- (n-1)* (mediaMuestral - mean(T))
+# Estimador jack nife del estadistico muestral
+seEst <- sqrt((sum( (pseudo-mean(pseudo))^2)/(n*(n-1))))
+
+print(kable(
+  cbind('Jackknife '=c('Sesgo jack'= bjack,
+                       'Media - Sesgo jack'= TJackmean,
+                       'Estimador JKf se(Corr)'= seEst,
+                       'Media muestral'= mean(x)))))
+
+```
+Como se puede observar, al se la media muestral un estadísitco insesgado 
+para la media poblacional, el estadístico corregido por sesgo de Jacknife es el 
+mmismo que sin corrección.
+
+Calculando intervalo de confianza al .05
+```{r}
+ICmedia <- c(TJackmean - 1.96* seEst, TJackmean + 1.96* seEst)
+print(kable(
+  cbind('Intervalo de confianza al 95% '=c('Lower'= ICmedia[1],
+                       'Upper'= ICmedia[2]))))
+
+```
+2) Supongamos que queremos estimar thetha = sigma >Que pasara la desviacion
+estandar muestral (theta hat = s)?
+```{r}
+rm(list = ls())
+#datos
+x <- c(3.56, 0.69, 0.10, 1.84, 3.93, 1.25, 0.18, 1.13, 0.27, 0.50,
+       0.67, 0.01, 0.61, 0.82, 1.70, 0.39, 0.11, 1.20, 1.21, 0.72)
+
+jack <- numeric(length(x)-1)  #Vector con observación menos una
+pseudo <- numeric(length(x))  #Pseudo valores para bjack 
+T <- numeric(length(x))       
+
+for (i in 1:length(x)){ 
+  for (j in 1:length(x)){
+    if(j < i) jack[j] <- x[j] 
+    else if(j > i) jack[j-1] <- x[j]
+  } 
+  # estadístico es el error estandar jacknife de la i-esima muestra
+  T[i]<- sqrt(var(jack))
+  pseudo[i] <- length(x)*sqrt(var(jack))-(length(x)-1)*sqrt(var(jack))
+  
+}
+# estadístico de la media con iesima muestra jack
+T   #T_{(-i)}
+n <- length(x)
+# media muestral sin corregir por sesgo 
+desvEstMuestral <- sqrt(var(x))
+
+# promedio de los pseudovalores, es el estimado por jacknife
+# corregido por sesgo
+TJacksd<- mean(pseudo)
+
+# sesgo
+bjack <- (n-1)* (desvEstMuestral - mean(T))
+# Estimador jack nife del estadistico muestral
+seEst <- sqrt((sum( (pseudo-mean(pseudo))^2)/(n*(n-1))))
+
+print(kable(
+  cbind('Jackknife '=c('Sesgo jack'= bjack,
+                       'Desv.Est - Sesgo jack'= TJacksd,
+                       'Estimador JKf se(Corr)'= seEst,
+                       'Desv.Est  muestral'= desvEstMuestral))))
+
+```
+Ambos estimadores de la desviación estandar, inclusive corregido por sesgo, sigue siendo sesgado.
+Sin emabargo, el sesgo se reduce un poco comparado con el estimador original.
+
+Calculando intervalo de confianza al .05
+```{r}
+ICmedia <- c(TJacksd - 1.96* seEst, TJacksd + 1.96* seEst)
+print(kable(
+  cbind('Intervalo de confianza al 95% '=c('Lower'= ICmedia[1],
+                                           'Upper'= ICmedia[2]))))
+
+
+```
+3) Supongamos que queremos estimar theta = sigma cuadrada. >Que pasara si usamos la
+varianza muestral estandar (thata hat = s2)?
+```{r}
+rm(list = ls())
+#datos
+x <- c(3.56, 0.69, 0.10, 1.84, 3.93, 1.25, 0.18, 1.13, 0.27, 0.50,
+       0.67, 0.01, 0.61, 0.82, 1.70, 0.39, 0.11, 1.20, 1.21, 0.72)
+
+jack <- numeric(length(x)-1)  #Vector con observación menos una
+pseudo <- numeric(length(x))  #Pseudo valores para bjack 
+T <- numeric(length(x))       
+
+for (i in 1:length(x)){ 
+  for (j in 1:length(x)){
+    if(j < i) jack[j] <- x[j] 
+    else if(j > i) jack[j-1] <- x[j]
+  } 
+  # estadístico es el error estandar jacknife de la i-esima muestra
+  T[i]<- var(jack)
+  pseudo[i] <- length(x)*var(jack)-(length(x)-1)*var(jack)
+}
+# estadístico de la media con iesima muestra jack
+T   #T_{(-i)}
+n <- length(x)
+# media muestral sin corregir por sesgo 
+VarMuestral <- var(x)
+# pseudo valores
+pseudo
+# promedio de los pseudovalores, es el estimado por jacknife
+# corregido por sesgo
+TJackvar<- mean(pseudo)
+
+# sesgo
+bjack <- (n-1)* (VarMuestral - mean(T))
+# Estimador jack nife del estadistico muestral
+seEst <- sqrt((sum( (pseudo-mean(pseudo))^2)/(n*(n-1))))
+
+print(kable(
+  cbind('Jackknife '=c('Sesgo jack'= bjack,
+                       'Desv.Est - Sesgo jack'= TJackvar,
+                       'Estimador JKf se(Corr)'= seEst,
+                       'Desv.Est  muestral'= VarMuestral))))
+
+```
+Al igual que con la media  muestra, la varianza muestral es un estimador insesgado de
+la varianza polacional. Es por eso, que el sesgo es cero, y el estadístico
+de jacknife corregido por sesgo es igual que el estadístico muestral.
+
+Calculando intervalo de confianza al .05
+```{r}
+ICmedia <- c(TJackvar - 1.96* seEst, TJackvar + 1.96* seEst)
+print(kable(
+  cbind('Intervalo de confianza al 95% '=c('Lower'= ICmedia[1],
+                                           'Upper'= ICmedia[2]))))
+
+```
+
+EJERCICIO 2 
+---------------
+
+Se hicieron 27 mediciones de los rendimientos de dos procesos industriales, con los siguientes
+resultados:
+
+EJERCICIO 2 DE PRACTICA 
+```{r}
+suppressMessages(library(knitr))
+# Proceso 1 :
+n <- 11
+ybar <- 6.23
+s2est <- 3.79
+```
+Suponiendo que los rendimientos se distribuyen normalmente con la misma varianza, encuentre intervalos de confianza para las medias $\mu_{1}$ y $\mu_{2}$ y para la diferencia de medias $\mu_{1}$ - $\mu_{2}$
+
+Asumiendo que las varianzas que se dan en el ejercicio son las de proceso (poblacionales). Al final de este ejercicio, se realiza  de nuevo, sin embargo, ahora si se considera que son estimaciones y se  realizan los intervalos correspondientes. Esto con el fin, de poder 
+construir la mayor forma posibe de intervalos, con fines didacticos.
+
+Intervalo de confianza al para $\mu_{1}$ con varianza del proceso conocida 
+```{r}
+z <- c(qnorm(1-.1/2), qnorm(1-.05/2), qnorm(1-.01/2))
+
+CI <- sapply(z, function(z){
+  ICupper <<- ybar + z*(s2est/sqrt(n)) # IC superior
+  IClower <<- ybar - z*(s2est/sqrt(n)) # IC inferior
+  IC <- c(IClower, ICupper) # Intervalos de Confianza
+  return(IC)
+} )
+
+
+print(kable(
+  cbind('Proceso 1 IC al 0.1'=c('LOWER'=CI[1,1], 'UPPER'=CI[2,1]), 
+        'Proceso 1 IC al 0.05'=c('LOWER'=CI[1,2],'UPPER'=CI[2,2]),
+        'Proceso 1 IC al 0.01'=c('LOWER'=CI[1,3],'UPPER'=CI[2,3]))))
+
+
+```
+Calculado intervalo de confianza para el parámetro $\mu_{2}$
+```{r}
+rm(list = ls()) # limpiando environment
+# Proceso 2 :
+n <- 16
+ybar <- 12.74
+s2est <- 4.17
+
+z <- c(qnorm(1-.1/2), qnorm(1-.05/2), qnorm(1-.01/2))
+
+CI <- sapply(z, function(z){
+  ICupper <<- ybar + z*(s2est/sqrt(n)) # IC superior
+  IClower <<- ybar - z*(s2est/sqrt(n)) # IC inferior
+  IC <- c(IClower, ICupper) # Intervalos de Confianza
+  return(IC)
+} )
+
+
+print(kable(
+  cbind('IC al  0.1'=c('LOWER'=CI[1,1], 'UPPER'=CI[2,1]), 
+        'IC al 0.05'=c('LOWER'=CI[1,2],'UPPER'=CI[2,2]),
+        'IC al 0.01'=c('LOWER'=CI[1,3],'UPPER'=CI[2,3]))))
+
+
+```
+ Proceso 1 y 2 :
+ Intervalos de confianza, para dos poblaciones con varianza del proceso conocida, pero diferente. A su vez, se realizará una prueba de hipótesis sobres si la  discrepancia entre las muestras son muy grandes. En el sentido de si la probabilidad de que se observe la discrepancia es grande o caso contrario no sea.
+
+De esta manera, estamos interesados en ver si las dos poblaciones son distintas.
+
+Como la varianza de los procesos son conocidas, el pivote para la construcción del intervalo de confianza es el siguiente:
+$\mu_{1} - \mu_{2}= 0$
+```{r}
+rm(list = ls())
+n1 <- 11
+n2 <- 16
+sigma2est1 <- 3.79
+sigma2est2 <- 4.17
+ybar1 <- 6.23
+ybar2 <- 12.74
+pivote <- (ybar1 - ybar2 - (0))/ sqrt((sigma2est1/n1) + (sigma2est2/n2))
+
+ybar <- ybar1 - ybar2
+s2est <-  sqrt((sigma2est1/n1) + (sigma2est2/n2))
+
+z <- c(qnorm(1-.1/2), qnorm(1-.05/2), qnorm(1-.01/2))
+
+CI <- sapply(z, function(z){
+  ICupper <<- ybar + z*(s2est) # IC superior
+  IClower <<- ybar - z*(s2est) # IC inferior
+  IC <- c(IClower, ICupper) # Intervalos de Confianza
+  return(IC)
+} )
+
+
+print(kable(
+  cbind('IC al  0.1'=c('LOWER'=CI[1,1], 'UPPER'=CI[2,1]), 
+        'IC al 0.05'=c('LOWER'=CI[1,2],'UPPER'=CI[2,2]),
+        'IC al 0.01'=c('LOWER'=CI[1,3],'UPPER'=CI[2,3]))))
+```
+Como el intervalo es integramente negativo, podemos estar seguros (con una con una confiabilidad tanto del $90\%$, $95\%$ y $99\%$ de significancia), que la diferencia
+entre las poblaciones es negativa. Significando que la media del proceso uno, es menor que la media del proceso dos. Por lo tanto no podemos aceptar que las dos poblaciones son iguales.
+
+EJERCICIO 2 TAREA
+
+Ahora, se realiza lo que en realidad se pide. Se desconocen varianzas poblacionales, y se toman las muestrales (pp Diapositiva 174
+Caso 3). Caso en el que la población viene de una normal y sigma cuadrada es desconocida
+
+Intervalo de confianza al para $\mu_{1}$con varianza del proceso conocida. 
+```{r}
+rm(list = ls()) # limpiando environment
+# Proceso 1 :
+
+ybar <- 6.23
+s2est <- 3.79
+n <- 11
+
+# El pivote se distribuye como una t- Student con n-1 grados de libertad
+t <- c(qt(1- .1/2, n-1), qt(1- .05/2, n-1), qt(1- .01/2, n-1))
+
+CI <- sapply(t, function(t){
+  ICupper <<- ybar + t*(sqrt(s2est)/sqrt(n)) # IC superior
+  IClower <<- ybar - t*(sqrt(s2est)/sqrt(n)) # IC inferior
+  IC <- c(IClower, ICupper) # Intervalos de Confianza
+  return(IC)
+} )
+
+
+print(kable(
+  cbind('Proceso 1 IC al 0.1'=c('LOWER'=CI[1,1], 'UPPER'=CI[2,1]), 
+        'Proceso 1 IC al 0.05'=c('LOWER'=CI[1,2],'UPPER'=CI[2,2]),
+        'Proceso 1 IC al 0.01'=c('LOWER'=CI[1,3],'UPPER'=CI[2,3]))))
+
+
+```
+Calculado intervalo de confianza para el parámetro $\mu_{1}$
+```{r}
+rm(list = ls()) # limpiando environment
+# Proceso 2 :
+n <- 16
+ybar <- 12.74
+s2est <- 4.17
+
+t <- c(qt(1- .1/2, n-1), qt(1- .05/2, n-1), qt(1- .01/2, n-1))
+
+CI <- sapply(t, function(t){
+  ICupper <<- ybar + t*(sqrt(s2est)/sqrt(n)) # IC superior
+  IClower <<- ybar - t*(sqrt(s2est)/sqrt(n)) # IC inferior
+  IC <- c(IClower, ICupper) # Intervalos de Confianza
+  return(IC)
+} )
+
+
+print(kable(
+  cbind('Proceso 1 IC al 0.1'=c('LOWER'=CI[1,1], 'UPPER'=CI[2,1]), 
+        'Proceso 1 IC al 0.05'=c('LOWER'=CI[1,2],'UPPER'=CI[2,2]),
+        'Proceso 1 IC al 0.01'=c('LOWER'=CI[1,3],'UPPER'=CI[2,3]))))
+
+
+```
+Proceso 1 y 2 :
+Intervalos de confianza para dos poblaciones con varianza desconocida y diferente.
+Para este caso como la población se asume normal, una de las soluciones es la 
+propuesta por Satterthwaite (1946)
+$\mu_{1} - \mu_{2}= 0$
+```{r}
+rm(list=ls()) # limpiando environment
+
+n1 <- 11
+n2 <- 16
+sigma2est1 <- 3.79
+sigma2est2 <- 4.17
+ybar1 <- 6.23
+ybar2 <- 12.74
+ybar <- ybar1 - ybar2
+
+```
+El pivote se va a distribuir como un t- student con n grados de libertad
+los cuales se utiliza la solución propuesta por  Satterthwaite (1946) , para
+el númeor efectivo de grados de libertad.
+```{r}
+N<- round(((sigma2est1/n1 + sigma2est2/n2)^2)/(((sigma2est1/n1)^2)*(1/(n1-1)) + ((sigma2est2/n2)^2)*(1/(n2-1)))) 
+
+t <- c(qt(1- .1/2, N), qt(1- .05/2, N), qt(1- .01/2, N))
+
+S2 <- sqrt(sigma2est1/n1 + sigma2est2/n2)
+  
+CI <- sapply(t, function(t){
+  ICupper <<- ybar + t*(S2) # IC superior
+  IClower <<- ybar - t*(S2) # IC inferior
+  IC <- c(IClower, ICupper) # Intervalos de Confianza
+  return(IC)
+} )
+
+
+print(kable(
+  cbind('IC al  0.1'=c('LOWER'=CI[1,1], 'UPPER'=CI[2,1]), 
+        'IC al 0.05'=c('LOWER'=CI[1,2],'UPPER'=CI[2,2]),
+        'IC al 0.01'=c('LOWER'=CI[1,3],'UPPER'=CI[2,3]))))
+
+
+```
+Como el intervalo es integramente negativo, podemos estar seguros (con una con una confiabilidad tanto del $90\%$, $95\%$ y $99\%$  de significancia), que la diferencia
+entre las poblaciones es negativa. Significando que la media del proceso uno, es menor que la media del proceso dos. Por lo tanto no podemos aceptar
+que las dos poblaciones son iguales.
+
+EJERCICIO 3 
+---------------
+
+Un experimento para determinar el efecto de una medicina en la concentraci´on de glucosa en
+la sangre de ratas diab´eticas dio los siguientes resultados:
+Grupo control: $2.05 1.82 2.00 1.94 2.12$
+Grupo tratamiento: $1.71 1.37 2.04 1.50 1.69 1.83$
+
+Analiza la hip´otesis de que el tratamiento no tiene efecto sobre la media de la concentraciónde la glucosa en la sangre. Mencione las hip´otesis bajo las cuales realiza el análsis.
+
+Experimento en concentración de glucosa en la sangre
+de ratas diabéticas 
+
+```{r}
+rm(list = ls()) # limpiando environment
+GrupoControl <- c(2.05, 1.82, 2.00, 1.94, 2.12)
+GrupoTratamiento<- c(1.71, 1.37, 2.04, 1.50, 1.69, 1.83)
+```
+Hipotesis de que el tratamiento no tiene efecto
+sobre la media de la concentración de la glucosa de sangre.
+
+```{r}
+Obs <- c(GrupoControl, GrupoTratamiento)
+
+```
+$H_{0}: \mu = 0$ vs $H_{A}: \mu \neq 0$
+```{r}
+suppressMessages(library(fBasics))
+suppressMessages(library(ggplot2))
+suppressMessages(library(knitr))
+qqnormPlot(Obs)
+```
+Se asume que la muestra es normal con media mu y varianza sigma cuadrara. No obstante, implementamos un qqplot y observamos que las observaciones se encuentran dentro del intervalo de confianza al $95\%$ de significancia.
+
+```{r}
+g = Obs
+m<-mean(g)
+std<-sqrt(var(g))
+hist(g, density=10, breaks=10, prob=TRUE, 
+     xlab="x-variable", 
+     main="normal curve over histogram")
+curve(dnorm(x, mean=m, sd=std), 
+      col="darkblue", lwd=2, add=TRUE, yaxt="n")
+
+```
+Al trazar el histrograma se observa como la distribución se encuentra un poco sesgada a la izquierda (derecha para quien observa).
+
+```{r}
+V1 <- Obs
+ggplot(as.data.frame(Obs), aes( "", V1)) + geom_boxplot()
+
+```
+Sin embargo, con el boxplot se observa de forma marcada el sesgo previamente mencionado. Entre las cosas que se puede observar es la mediana jalada un poco hacia el lado
+donde la distribución empirica se sesga.
+
+Por último, aplicamos test de normalidad a la series
+```{r}
+shapiro.test(Obs)
+
+```
+$p-value$ es mayor a $0.1$, y el estadístico de shapiro-wilk se acerca a uno. Por lo tanto, bajo la hipótesis nula de normalidad, los datos
+ muestran evidencia suficiente que se distribuyen como una normal.
+ 
+Nota: se es conciente del limitante del tamaño de la muestra y que esto inclusive pueda que la distribución no sea una normal. Sin embargo, para manera de
+ejercicio, se asume la normalidad.
+
+Una vez encontrada la distribución del las muestras, se realiza la prueba de hipótesis. Don de el estadístico de prueba de va a distribuir bajo la nula como una normal con media 0 (que no tenga efecto el test), y varianza sigma cuadrada.
+ 
+Dado que no se conoce la varianza del proceso, se procede a estimarla, con la varianza muestral
+ 
+```{r}
+s2est <- var(Obs)
+sest <- sqrt(s2est) 
+n <- length(Obs)
+
+```
+El estadistico de prueba esta dado por:
+```{r}
+xbar <- mean(Obs)
+EstPrueba <- sqrt(n)*(xbar - 0)/ sest
+
+```
+De este modo, se rechaza la Ho de que la media es cero, es decir, que el tratamiento no tiene efecto sobre la media de la concentración de la glucosa de la sangre de las ratas.
+
+Recordemos, que al utilizar la estimación de la varianza, el estadistico de prueba se distribuye como un t de Student con $n-1$ grados delibertad, y alpha grados de significancia.
+
+```{r}
+tstudent <- c(qt(.9, n-1), qt(.95, n-1), qt(.99, n-1))
+
+
+
+PruebaHip <- sapply(tstudent, function(tstudent){
+  RechazaHo <- EstPrueba > tstudent
+  return(RechazaHo)
+} )
+
+print(kable(
+  cbind('Rechaza H0 de mu = 0'=c('90% significancia '= PruebaHip[1],
+                                 '95% significancia '= PruebaHip[2],
+                                 '99% significancia '= PruebaHip[3]))))
+
+
+
+```
+
+Por lotanto, se tiene evidencia suficiente  de rechazar la hipótesis nula, y con ello, decir que el tratamiento no tiene efecto sobre la media de la concentración de la glucosa en la sangre.
+
+EJERCICIO 6
+---------------
+Una máquina de bebidas está diseñada para descargar, cuando opera apropiadamente, al menos 7 onzas de bebida por tasa con una desviación estándar de 0.2 onzas. Si un estadístico selecciona una muestra aleatoria de 16 tasa para examinar el servicio al cliente y este está
+dispuesto a tomar un riesgo $\alpha = 0.05$ de cometer un error de Tipo I, calcule la potencia de la prueba y la probabilidad ($\beta$) de tener un error del Tipo II si la media poblacional de la
+cantidad despachada es:
+a) 6.9 onzas por tasa.
+b) 6.8 onzas por tasa.
+Puede asumir que los datos son normales
+
+```{r}
+rm(list = ls())
+# al menos al operar apropiadamente da 7 onzas de bebida H0
+desvStan <- .2
+n <- 16
+alpha <- 0.05 # cometer error tipo 1
+
+# calcula potencia de la prueba 
+# probabilidad de tener el error tipo 2
+
+# media de la población de cantidad despachada
+#a)
+xbar1 <- 6.9
+#b)
+xbar2 <- 6.8
+
+```
+La hipótesis nula  se plantea en terminos de que dicha maquina descarga 7 onzas por tasa, y en este caso se conoce la desviación estandar del proceso, que es de 2 desviaciones.
+De esta manera, se tiene una prueba de dos colas, o es 7 onzas por tasa, o es algo distinto
+a esa cantidad.
+
+De acuerdo a la clase, pruebas de hipótesis con estás carácteristicas rechazará tanto  valores pequeños del estadístico, como con valores grandes. Por lo tanto, se nos sugiere que se calcule la propabilidad conjunta de que estos dos eventos sucedan a un cierto 
+nivel de acepatación del error tipo 1. 
+```{r}
+H0 <- 7
+
+```
+Asumiendo normalidad en la muestra, se calcula el valor z con un nivel de insignificancia de (alpha) .05.
+Que en este caso, será la probabilidad de incurrir en el error tipo 1, rechazar la hipótesis nula cuando era cierta.
+
+a) Con media muestral de $6.9$
+```{r}
+# valores de la región crítica
+k <- qnorm(1-.05/2)
+k2 <- -qnorm(1-.05/2) 
+
+# Estadístico de Pureba 
+
+# Prueba de hipótesis de dos colas rechazas si abs(z) > z alpha/2
+EstPrueba <- (((sqrt(n)*(xbar1 - H0))/desvStan))
+abs(EstPrueba) > k
+# estandarizado el estadístico se distribuye como normal estandar 
+# N(0 , 1)
+
+# Gráfica de la prueba de hipótesis
+
+x <- seq(-3,3,by=0.01)
+y <- dnorm(x) # momentos de x barra estimación de mu
+right <- k
+plot(x,y,type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Distribución muestral para ',bar(x))),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+     frame.plot=FALSE)
+
+axis(1,at=c(-3,right,abs(EstPrueba),3),
+     pos = c(0,0),
+     labels=c(expression(' '),expression(z[alpha/2]),expression(z),expression(' ')))
+axis(2)
+
+xReject <- seq(right,3,by=0.01)
+yReject <- dnorm(xReject, 0, 1)
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='red')
+
+xReject2 <- seq(abs(EstPrueba),abs(EstPrueba)+.1,by=0.01)
+yReject2 <- dnorm(xReject2, 0, 1)
+polygon(c(xReject2,xReject2[length(xReject2)],xReject2[1]),
+        c(yReject2,0, 0), col='blue')
+legend(1.1, .4, legend=c("Z critical", "Z obs"),
+       col=c("red", "blue"), lty=1, cex=0.8)
+
+```
+En este caso, se tiene evidencia suficiente para rechazar la nula
+
+En terminos de p valores:
+```{r}
+pvalor <- 2*(1-pnorm(abs(EstPrueba)))
+
+```
+Si se contrasta contra el valor de significancia, se tiene :
+```{r}
+
+print(kable(
+cbind('Rechaza H0 '=c('95% significancia '= pvalor < alpha))))
+print(kable(
+cbind('Rechaza H0 '=c('pvalue '= pvalor ))))
+```
+Por lo tanto,  Se tiene evidencia suficiente para rechazar ña hipótesis nula, sobre que la máquina de bebidas  descarga en promedio 7 onzas por tasa.
+
+Potencia Y error tipo 2 de la prueba a un cierto niver de significancia alpha
+```{r}
+n <- 16
+H0 <- 7
+desvest <- 0.2
+z <- qnorm(1-.05/2)
+
+
+Ha <- seq(6.5, 7.5, .01)
+plot(Ha, y <- sapply(Ha, function (Ha) pnorm(-z + (sqrt(n)*(Ha - H0))/desvest) +
+                  pnorm( -z - (sqrt(n)*(Ha - H0))/desvest)),type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Poder ',beta, ' y Error Tipo II ',1-beta )),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(Ha),max(Ha)),
+     frame.plot=FALSE, col ="green")
+lines(Ha, sapply(Ha, function (Ha) 1-(pnorm(-z + (sqrt(n)*(Ha - H0))/desvest) +
+                                        pnorm( -z - (sqrt(n)*(Ha - H0))/desvest))), type="l", col="red")
+
+legend(7.2, .7, legend=c("Poder", "Error tipo II"),
+       col=c("green", "red"), lty=1, cex=0.6)
+
+axis(1)
+axis(2)
+ 
+
+```
+
+En la gráfica anterior se observa la función poder y el error tipo II a un nivel de error tipo 1 del $0.05$, cambiando los valores de la media sobre la hipótesis alternativa.
+
+Una vez realizado lo anterior, ahora realizamos la segunda parte del ejercicio. En esta parte,
+la media muestra de de el número de onzas por tazas que descarga es de $6.8$.
+
+Primero realizamos una prueba de hipótesis de dos colas. Con la Hipótesis nula que es tener 7 onzas por taza con una desviación estandar conocida del proceso.
+
+
+Puede asumir que los datos son normales. No, dado que el tamaño de la muestra (16) es pequeña. Sin embargo, se podría utiizar la distribución t para muestras pequeñas, pero lo cual implicaría
+colas más pesadad. 
+
+
+b) Con media muestral de $6.8$.
+
+
+```{r}
+
+desvest <- 0.2
+z <- qnorm(1-.05/2)
+n <- 16
+alpha <- 0.05 # cometer error tipo 1
+xbar2 <- 6.8
+k <- qnorm(1-.05/2)
+k2 <- -qnorm(1-.05/2) 
+H0 <- 7
+# Estadístico de Pureba 
+
+# estandarizado el estadístico se distribuye como normal estandar 
+# N(0 , 1)
+# Prueba de hipótesis de dos colas rechazas si abs(z) > z alpha/2
+EstPrueba <- (((sqrt(n)*(xbar2 - H0))/desvStan))
+abs(EstPrueba) > k
+
+# Gráfica de la prueba de hipótesis
+
+x <- seq(-4.5,4.5,by=0.01)
+y <- dnorm(x) # momentos de x barra estimación de mu
+right <- k
+plot(x,y,type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Distribución muestral para ',bar(x))),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+     frame.plot=FALSE)
+
+axis(1,at=c(-4.5,right,abs(EstPrueba),4.5),
+     pos = c(0,0),
+     labels=c(expression(' '),expression(z[alpha/2]),expression(z),expression(' ')))
+axis(2)
+xReject <- seq(right,3,by=0.01)
+yReject <- dnorm(xReject, 0, 1)
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='red')
+
+xReject2 <- seq(abs(EstPrueba),abs(EstPrueba)+.1,by=0.01)
+yReject2 <- dnorm(xReject2, 0, 1)
+polygon(c(xReject2,xReject2[length(xReject2)],xReject2[1]),
+        c(yReject2,0, 0), col='blue')
+legend(1.1, .4, legend=c("Z critical", "Z obs"),
+       col=c("red", "blue"), lty=1, cex=0.8)
+
+```
+En este caso, se tiene evidencia suficiente para rechazar la nula ya que cae en la región de rechazo
+
+
+En terminos de p valores:
+```{r}
+pvalor <- 2*(1-pnorm(abs(EstPrueba)))
+
+```
+Si se contrasta contra el valor de significancia, se tiene :
+```{r}
+
+print(kable(
+cbind('Rechaza H0 '=c('95% significancia '= pvalor < alpha))))
+print(kable(
+cbind('Rechaza H0 '=c('pvalue '= pvalor ))))
+```
+Por lo tanto,  al igual que con una media de $6.9$, se tiene evidencia suficiente para rechazar ña hipótesis nula, sobre que la máquina de bebidas  descarga en promedio $7$ onzas por taza.
+
+Para responder la pregunta de si se puede asumir normalidad, se vuelve a gráficar la función de poder y el error tipo II.
+```{r}
+desvest <- 0.2
+z <- qnorm(1-.05/2)
+Ha <- seq(6.5, 7.5, .01)
+plot(Ha, y <- sapply(Ha, function (Ha) pnorm(-z + (sqrt(n)*(Ha - H0))/desvest) +
+                       pnorm( -z - (sqrt(n)*(Ha - H0))/desvest)),type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Poder ',beta, ' y Error Tipo II ',1-beta )),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(Ha),max(Ha)),
+     frame.plot=FALSE, col ="green")
+lines(Ha, sapply(Ha, function (Ha) 1-(pnorm(-z + (sqrt(n)*(Ha - H0))/desvest) +
+                                        pnorm( -z - (sqrt(n)*(Ha - H0))/desvest))), type="l", col="red")
+
+legend(7.2, .7, legend=c("Poder", "Error tipo II"),
+       col=c("green", "red"), lty=1, cex=0.6)
+
+axis(1)
+axis(2)
+
+```
+Lo que se puede decir sobre la operación de la máqina de bebidad, es: 
+
+```{r}
+desvest <- 0.2
+z <- qnorm(1-.05/2)
+Ha <- 6.9
+
+power.1 <- pnorm(-z + (sqrt(n)*(Ha - H0))/desvest) +
+  pnorm( -z - (sqrt(n)*(Ha - H0))/desvest)
+
+errorT2.1 <- (1 - power.1)
+
+Ha <- 7.1
+
+power.2 <- pnorm(-z + (sqrt(n)*(Ha - H0))/desvest) +
+  pnorm( -z - (sqrt(n)*(Ha - H0))/desvest)
+
+errorT2.2 <- (1 - power.2)
+
+print(kable(
+  cbind('Ha = 6.9 '= c('Poder '= power.1 , 'Error Tipo 2 '= errorT2.1),
+        'Ha = 7.1 '= c('Poder '= power.2 , 'Error Tipo 2 '= errorT2.2))))
+
+```
+Ante variaciones de $0.1$  se tiene la misma probabilidad tanto de detectar un incremento (poder)
+o como de no detectarlo (error tipo 2) con esta prueba, dado a ese tamaño de la muestra. Posiblemente la desviación no es lo suficientemente pequeña, esto como para detectar una variación lo suficientemente 
+pequeña y detectar dicha variación. De está manera, se recomendaría incrementar el tamaño de la muestra, para bajo ciertas condiciones se pueda aplicar el TLC, y que el estadístico de prueba se pueda convergen en distribución a una normal estandar. Por lo tanto, se concluye que no se puede asumir que estos datos son normales, a menos que asíntoticamente aproximaramos a una distribución normal estandar.
+
+
+EJERCICIO 7
+---------------
+
+Construya un intervalo de confianza aproximado del 90% para el parámetro $\lambda$ de una distribución de Poisson. Evalúe su intervalo si una muestra de tamaño 30 produce $\sum x_{i}=240$
+
+```{r}
+rm(list = ls()) # limpiando environment
+alpha <- 1-.9
+# El estimador del parámetro de lambda de máxima verosimilitud es la media muestral
+n <- 30  
+lambdaML <-  240/n
+print(kable(
+cbind('Información'= c('Lambda'= lambdaML , 'N'= n, 'alpha'= alpha))))
+```
+Si consideramos n como grande, por TLC, el pivote converge en distribución, bajo ciertas condiciones,
+a una normal estandar $N(0,1)$.
+
+Se busca que el estimador sea consistente, es decir, que cuando n sea grande, el estimador del parámetro conerga en probabilidad al parámetro poblacional.
+Entonces, se busca que la diferencia de medias sea cero.
+```{r}
+# Podría uno probar distintos valores del parámetro poblacional  para observar si el intervalo
+# contien al cero.
+#Pivote <- (lambdaML - lambda) / (lambdaML/sqrt(n))
+z <- qnorm(1-alpha/2)
+IC <- c( lambdaML - z*(lambdaML/sqrt(n)), lambdaML + z*(lambdaML/sqrt(n)))
+
+print(kable(
+  cbind('IC  lambda ML 95% significancia '= c('Lower'= IC[1] , 'Upper'= IC[2]))))
+
+
+```
+En conclusión, si la muestra fue grande, el intervalo construido por estimadores de maxima verosimilitud
+por la propiedad de invariabilidad ante transformaciones, hacen que el pivote sea eficiente, así como
+lo es el estimador de MV, cumpliendo con e críterio de mínima varianza y garantizando el menor error
+de estimación posible.
+
+
+EJERCICIO 9
+---------------
+
+Sea $X_{1},...,X_{n}$ $\sim$ Poisson($\lambda$).
+
+a) Dado a que es una prueba de dos colas y un estimador para lamda es la media muestral (ta sea por maxima verosimilitud u método de momentos), y como en el ejercicio nos indican que el tamaño de muestra es grande.
+Entonces, el estimador de lamda se puede aproximar asintoticamente a una $Normal(0, 1)$.
+Siendo esto, la definición del test de Wald. Por lo tanto, el estadístico de prueba que 
+se propone es el estadístico de Wald (ponerlo).
+
+$W = (\hat\theta- \theta )/  \hat se$
+
+b ) Establezca la región de rechazo para alpha $0.05$
+c) Sea $\lambda_{0}=1$, $n=20$,$\alpha=0.05$...
+```{r}
+alpha <- 0.05
+lambda.Null <- 1
+n <- 20
+lambda.Sim<- rpois(20, 1)
+lambda.hat <- mean(lambda.Sim)
+seEst <- sqrt(var(lambda.Sim))
+W <- (lambda.hat -  lambda.Null) / seEst
+z <- qnorm(1-.05/2)
+```
+No se tiene evidencia suficiente para rechazar la hipótesis nula.
+```{r}
+print(kable(
+  cbind('Rechaza H0 '=c('95% significancia '= abs(W) > z))))
+print(kable(
+  cbind('Rechaza H0 '=c('pvalue '= 2*pnorm(-abs(W)) ))))
+```
+Inclusive con el $p-valor$ no se tiene evidencia suficiente para rechazar la Hipótesis 
+nula.
+
+Repita esto $10^4$ veces y cuente que tan a menudo  rechaza la hipótesis nula 
+```{r}
+outsideCI <- numeric(10^4)  # almacenando proporción de veces que IC no contiene}
+# el valor de la hipótesis nula
+set.seed(1) # fijando semlla 
+# Ho: lambda = labda nulla > 0 vs Ha: lambda diferencte lambda nula mayor a cero
+for (i in 1:10^4){
+  lambda.Sim<- rpois(20, 1)
+  lambda.hat <- mean(lambda.Sim)
+  seEst <- sqrt(var(lambda.Sim))
+  W <- (lambda.hat -  lambda.Null) / (seEst/sqrt(n)) 
+  z <- qnorm(1-.05/2)
+  outsideCI[i] <- ifelse(abs(W) > z, 1, 0)
+} # en for
+
+```
+¿ Qué tan a menudo rechaza la hipótesis nula ?
+```{r}
+tasaError <- mean(outsideCI) 
+# proporcion de la veces se rechaza la Hipótesis nula
+print(kable(
+  cbind('(%) proporción de veces que rechaza Ho'=c('100%(1-.05)'= tasaError * 100))))
+
+
+```
+$6.9\%$ de las veces se rechaza la hipótesis nula.
+
+¿ Qué tan cercanaes la tasa de error tipo I de$ 0.05$ ?
+
+```{r}
+print(kable(
+    cbind('(%) proporción de veces que rechaza Ho'=c('Tasa de error'= tasaError, 
+                                                     'alpha'= alpha))))
+
+
+```
+
+Como se observa la tasa de error es cercana al nivel de significancia de $0.05$. Con una diferencia mayor de $0.0194$.
+
+EJERCICIO 10
+---------------
+
+En la librería boot de R accesar los datos cd4 los cules son conteos de células CD4 en pacientes VIH-positivos antes y despúes de un año de tratamiento con un antiviral
+
+```{r}
+rm(list = ls())
+library(boot)
+library(microbenchmark)
+library(fBasics) 
+data <- cd4
+head(cd4)
+conBase <- cd4$baseline
+conDesp <-  cd4$oneyear
+th.hat <- cor(conBase, conDesp)
+```
+a) Construya un intervalo de conanza bootstrap para el coeciente de correlacion entre
+los conteos base y los conteos despues del tratamiento.
+
+```{r}
+# boostrap con libreria 1000
+fc <- function(d, i){
+  d2 <- d[i,]
+  return(cor(d2$baseline, d2$oneyear))
+}
+set.seed(626)
+bootcorr <- boot(data, fc, R=1000)
+bootcorr
+std <- 0.09028391
+```
+Ahora utilizamos  Boostrap con función propia Algoritmo basado en Wasserman (2005)
+
+```{r}
+N <- nrow(data) # tamaño de la muestra
+p <- cor(conBase,conDesp) #correlación muestral entre las muestras
+B <- 1000 #Número de simulaciones
+tboot <- numeric(1000) # Vector guarda simulaciones
+set.seed(626)
+for (i in 1:B) {
+  xx <- sample(N, N, replace = TRUE) 
+  tboot[i] <- cor(data[xx, ])[1,2] 
+}
+
+corrBoot <- mean(tboot)
+vBoot <- (1/B)* sum((tboot - (1/B)*sum(tboot))^2)
+se <- sqrt(vBoot)
+```
+Ahora, para construir el intervalo de confianza entre el coeficiente de correlación  entre conteos base y conteos desopués del tratamiento, se proponen 3 intervalos de confianza. El primero es el Intervalo normal, el cual no es tan preciso si la distribución del estadístico
+no es una normal. 
+
+Para esto, se revisa a manera rápida un qqplot, para oservar si las muestras con las que 
+el estadístico se construye son normales.
+
+Primero los datos del conteo base:
+```{r}
+qqnormPlot(conBase)
+```
+Seguido de los datos del conteo después del tratamiento:
+```{r}
+qqnormPlot(conDesp)
+```
+De manera general, se concluye que los datos vienen de una población normal, lo cual argumenta (no en gran medida) al utilizar un intervalo normal, con el error estandar estimado por boostrap (función propia).
+```{r}
+z <- qnorm(1-.05/2)
+Normal <- c(p - z*std, p + z*se)
+percentil <- c(quantile(tboot, .025), quantile(tboot, .975))
+pivotal <- c( 2*p - quantile(tboot, .025), 2*p - quantile(tboot, .975))
+
+print(kable(
+  cbind('Intervalo de Confianza Normal al 95% '=c('Lower'= Normal[1], 
+                                                  'Upper'= Normal[2]))))
+
+```
+A su vez, se presentan intervalos de confianza alternos al Normal.
+  
+```{r}
+print(kable(
+  cbind('Intervalo de Confianza Percentil '=c(' '= percentil))))
+
+
+print(kable(
+  cbind('Intervalo de Confianza Pivotal '=c(' '= pivotal))))
+
+
+```
+b) Calcule el coeficiente estimado de correlacion corregido por sesgo usando Jackknife.
+```{r}
+rm(list = ls())
+data <- cd4
+
+head(data) # datos
+dim(data) # dimensión de los datos
+
+# Jackknifing coeficiente de correlación 
+indata <- as.matrix(data, FALSE) # como matriz
+
+
+# Gráfico de puntos dependencia lineal entra las dos muetsras
+plot(data$baseline, data$oneyear, main="Pacientes VIH- positivo tratamiento", 
+     xlab="año Antes", ylab="año después")
+
+```
+Como análisis previo se puede observarcomo la medida dependencia lineal, como lo es la correlación, entre el conteo de células CD4 en los pacientes con VIH-positivo antes y después de un año de tratamiento antiviral están corelacionados positivamente. 
+
+Jackknifing el coeficiente de correlación de corregido por sesgo
+
+Primero calculamos el coeficiente de correlación de Pearson
+
+
+```{r}
+corrMuestra <- cor(data$baseline, data$oneyear)
+
+
+cat("Se observa el el coeficiente de correlación entre las serie es de: ", cor(data$baseline, data$oneyear))
+
+
+```
+Jackknife coeficiente de correlación de Pearson
+Primero, vamos a utilizar la función jacknife de la paqueteria  #library(bootstrap)
+
+
+
+Una vez esto, calculamos el coeficiente de correlación corregido por el sesgo usando Jackknife
+
+```{r}
+library("bootstrap")
+corr <- function(n,indata) { cor(indata[n,1],indata[n,2]) }
+Tjack<- jackknife(1:20,corr,indata)
+# corrección del sesgo en el coeficiente estimado usando Jackknife
+corrjack <- corrMuestra - Tjack$jack.bias
+
+print(kable(
+  cbind('Jackknife '=c('Sesgo jack'= Tjack$jack.bias,
+                       'Correlación - Sesgo jack'= corrjack,
+                       'Estimador JKf se(Corr)'= Tjack$jack.se,
+                       'Correlación muestral'= corrMuestra))))
+
+```
+Ahora, se va a realizar el jacknife sin utilizar la libreria en R.   
+
+```{r}
+# Jackknifing coeficiente de correlación para los datos de las escuelas de leyes
+rm(list = ls())
+data <- cd4
+n <- length(data$baseline)
+jack <- numeric(n-1)  # i-esima muestra jacknife
+jack2 <- numeric(n-1)  # i-esima muestra jacknife
+pseudo <- numeric(n)  # pseudo valores jacknife (para el estadístico de jack)
+T <- numeric(length(data$baseline))       # T_(-i) estadístico con la iesima muestra
+
+for (i in 1:n){ 
+  for (j in 1:n){
+    if(j < i){ jack[j] <- data$baseline[j] 
+    } else if(j > i) {jack[j-1] <- data$baseline[j]}
+  } 
+  for (r in 1:n){
+    if(r < i){ jack2[r] <- data$oneyear[r] 
+    } else if(r > i) {jack2[r-1] <- data$oneyear[r]}
+  }
+  T[i]<-cor(jack, jack2) 
+  pseudo[i] <- n*cor(data$baseline, data$oneyear)-(n-1)*cor(jack, jack2) 
+  } # end for
+
+
+Tlinea.horizontal<-mean(T) # media del estadístico de la iesima muestra jack
+
+
+bjack <- (n-1)*(Tlinea.horizontal-cor(data$baseline, data$oneyear)) #Estimador Jackknife del sesgo (bjack)
+
+TjackCorr <- cor(data$baseline, data$oneyear) - bjack
+
+seEst <- sqrt((sum( (pseudo-mean(pseudo))^2)/(n*(n-1)))) #Estimador Jackknife del error estandar
+
+print(kable(
+  cbind('Jackknife '=c('Sesgo jack'= bjack,
+                       'Correlación - Sesgo jack'= TjackCorr,
+                       'Estimador JKf se(Corr)'= seEst,
+                       'Correlación muestral'= cor(data$baseline, data$oneyear)))))
+
+```
+Calculando intervalo de confianza al .05
+```{r}
+ICmedia <- c(TjackCorr - 1.96* seEst, TjackCorr + 1.96* seEst)
+print(kable(
+  cbind('Intervalo de confianza al 95% '=c('Lower'= ICmedia[1],
+                                           'Correlación - Sesgo jack'= TjackCorr,
+                                           'Correlación muestral'= cor(data$baseline, data$oneyear),
+                                           'Upper'= ICmedia[2]))))
+
+```
+
+EJERCICIO 11
+---------------
+Los siguientes 15 datos forman una muestra aleatoria de una distribucion Gamma con parametro
+de forma lalpha = 3 y parametro de escala beta = 2 (la media es alpha*beta y la varianza alpha* beta^2)
+
+```{r}
+rm(list = ls())
+datos <- c( 14.18, 10.99, 3.38, 6.76, 5.56, 1.26, 4.05, 4.61,
+            1.78, 3.84, 4.69, 2.12, 2.39, 16.75, 4.19)
+```
+Como se observa la distribución se encuentra sesgada, lo cual argumenta a foavor sobre la distribución de la muestra.
+```{r}
+hist(datos)
+qqnorm(datos)
+boxplot(datos)
+```
+Encuentre un intervalo de conanza para la mediana de la distribucion. La mediana de la distribución no tiene una forma cerrada 
+Por medio de Boostrap se estima el error estandar de la mediana para la construcción 
+del intervalo de confianza.
+```{r}
+set.seed(626)
+n1 <- length(datos) # tamaño de la muestra
+p <- median(datos) #mediana muestral entre las muestras
+B <- 1000 #Número de simulaciones
+tboot <- numeric(1000) # Vector guarda simulaciones
+xx1 <- numeric(length(datos))
+for (i in 1:B){ # Boostrap re- muestreo
+  xx1 <- sample(datos, n1, TRUE)
+  tboot[i] <- median(xx1)
+} # end for 
+
+median(tboot)
+vBoot <- (1/B)* sum((tboot - (1/B)*sum(tboot))^2)
+se <- sqrt(vBoot)
+```
+Construir un intervalo de confianza estaría mal, debido a que la muestra se distribuye gamma (3, 2). Por lo tanto, se utiliza un intervalo percentil y pivotal.
+```{r}
+g <- qgamma(1-.05/2, 3, 2)
+
+percentil <- c(quantile(tboot, .025), quantile(tboot, .975))
+pivotal <- c( 2*p - quantile(tboot, .025), 2*p - quantile(tboot, .975))
+
+```
+A manera de ejercicio se calcula en intervalo Normal, sin embargo se sabe que no es bueno para este ejercicio.
+```{r}
+CI <- c(p - qgamma(1-.05/2,3,2)*se, p + qgamma(1-.05/2,3,2)*se)
+
+print(kable(
+  cbind('Intervalo de confianza al 95% Mediana'=c('Lower'= CI[1],
+                                                  'Upper'= CI[2],
+                                                  'Mediana Muestral'= median(datos),
+                                                  'Mediana -Boostrap'= median(tboot)))))
+
+print(kable(
+  cbind('Intervalo de Confianza Percentil '=c(' '= percentil,
+                                              'Mediana Muestral'= median(datos),
+                                              'Mediana -Boostrap'= median(tboot)))))
+
+
+print(kable(
+  cbind('Intervalo de Confianza Pivotal '=c(' '= pivotal, 
+                                            'Mediana Muestral'= median(datos),
+                                            'Mediana -Boostrap'= median(tboot)))))
+
+
+
+```
+
+
+
+EJERCICIO Extra 1 Diap. 291
+---------------
+
+En la sección de ejercicios extras no se pretende pedir puntuación extra, sólamente se hace por cuestiones morales ya que más de una vez la Dra. ha mencionado que es de buen ejercicio replicar las notas. De esta manera, solamente se replican resultados y gráficos.
+
+Pruebas para Una Muestra. Gráfica y ejemplo de la clase.
+
+```{r}
+rm(list = ls())
+# Variables
+xbarra <- 52.7
+sigma <- 4.8
+n <- 35
+x0 <- 50
+stdDev <- 4.8;
+x <- seq(-5,5,by=0.01)
+y <- dnorm(x)
+right <- qnorm(0.95)
+#Distribución
+plot(x,y,type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Assumed Distribution of ',bar(x))),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+     frame.plot=FALSE)
+axis(1,at=c(-5,right,0,((xbarra-x0)/(sigma/sqrt(n))),5),
+     pos = c(0,0),
+     labels=c(expression(' '),expression(bar(x)[cr]),expression(mu[0]),expression(z[0]),expression(' ')))
+axis(2)
+xReject <- seq(right,5,by=0.01)
+yReject <- dnorm(xReject)
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='red')
+```
+Cómo se puede observar, el valorór del piovote se encuentra en la zona de rechazo (rojo) a un nivel de significanca del 95.
+```{r}
+#p-value
+1-pnorm(((xbarra-x0)/(sigma/sqrt(n))))
+```
+
+Incrementando la desviación estádar se tiene:
+```{r}
+stdDev <- 0.75;
+x <- seq(-5,5,by=0.01)
+y <- dnorm(x,sd=stdDev)
+right <- qnorm(0.95,sd=stdDev)
+plot(x,y,type="l",xaxt="n",ylab="p",
+       xlab=expression(paste('Assumed Distribution of ',bar(x))),
+       axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+       frame.plot=FALSE)
+
+axis(1,at=c(-5,right,0,5),
+       pos = c(0,0),
+       labels=c(expression(' '),expression(bar(x)[cr]),expression(mu[0]),expression(' ')))
+axis(2)
+ xReject <- seq(right,5,by=0.01)
+ yReject <- dnorm(xReject,sd=stdDev)
+ polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+          c(yReject,0, 0), col='red')
+         
+```
+
+EJERCICIO Extra 2 Diap. 291
+---------------
+En la sección de ejercicios extras no se pretende pedir puntuación extra, sólamente se hace por cuestiones morales ya que más de una vez la Dra. ha mencionado que es de buen ejercicio replicar las notas. De esta manera, solamente se replican resultados y gráficos.
+
+Problema: Una máquina llenadora de envases de bebida está bajo control si su promedio de llenado es de 12.2 onzas por envase, con una desviación estandar de .05oz como máximo
+(vea diapositiva 291).
+```{r}
+rm(list = ls())
+# Datos del problema
+xbarra <- 12.102
+s2est <- 0.00335
+sigma0 <- 0.0025 # hipótesis nula parámetro
+alpha <- 0.05
+n <- 26
+valorCritico <- qchisq((1-.05),(n-1))
+# Estadístico de prueba
+u <- ((n-1)*s2est/sigma0)
+# pvalor
+pvalor <- 1-pchisq(33.5, n-1)
+
+```
+Gráfica: 
+```{r}
+x <- seq(10,60,by=0.01)
+y <- dchisq(x, 25)
+right <- qchisq((1-.05),(n-1))
+plot(x,y,type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Assumed Distribution of ',chi(n-1))),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+     frame.plot=FALSE)
+
+axis(1,at=c(10,right,(((n-1)*s2est)/sigma0),60),
+     pos = c(0,0),
+     labels=c(expression(' '),expression(chi[25]),expression(chi[0]),expression(' ')))
+axis(2)
+#axis(1)
+xReject <- seq(right,60,by=0.01)
+yReject <- dchisq(xReject, 25)
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='red')
+
+xReject2 <- seq(u,right,by=0.01)
+yReject2 <- dchisq(xReject2, 25)
+polygon(c(xReject2,xReject2[length(xReject2)],xReject2[1]),
+        c(yReject2,0, 0), col='blue')
+```
+De está manera se concluye que no se tiene evidencia de rechazar la $H_{0}$.
+
+EJERCICIO Extra 3 Diap. 321
+---------------
+
+En la sección de ejercicios extras no se pretende pedir puntuación extra, sólamente se hace por cuestiones morales ya que más de una vez la Dra. ha mencionado que es de buen ejercicio replicar las notas. De esta manera, solamente se replican resultados y gráficos.
+
+Observams que bajo un valor de la $H_{A}$ la probabilidad de no rechzar dado que la alternativa es cierta es muy grande (área azul).
+```{r}
+rm(list = ls())
+# BAJO LA NULA
+xbarra <- 52.7 # media muestral
+sigma <- 4.8 # varianza muestral
+n <- 35 
+x0 <- 50 # media bajo la hipótesis nula
+x <- seq(45,54,by=0.1)
+y <- dnorm(x,50, 4.8/sqrt(n)) # momentos de x barra estimación de mu
+right <- (sigma/sqrt(n))*qnorm(1-.05)+x0 # tamaño de muestra para x barra a partir del cual rechazan
+plot(x,y,type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Assumed Distribution of ',bar(x))),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+     frame.plot=FALSE)
+
+axis(1,at=c(45,right,x0,54),
+     pos = c(0,0),
+     labels=c(expression(' '),expression(bar(x)[alpha]),expression(mu[0]),expression(' ')))
+axis(2)
+
+xReject <- seq(right,54,by=0.01)
+yReject <- dnorm(xReject,50, 4.8/sqrt(n))
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='red')
+
+# BAJO LA ALTERNATIVA
+xA <- 51.4
+x <- seq(45,54,0.1)
+y <- dnorm(x,xA, 4.8/sqrt(n)) # momentos de x barra estimación de mu
+right <- (sigma/sqrt(n))*qnorm(1-.05)+x0 # tamaño de muestra para x barra a partir del cual rechazan
+lines(x,y)
+xReject <- seq(45,xA,by=0.01)
+yReject <- dnorm(xReject,xA, 4.8/sqrt(n))
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='lightskyblue')
+```
+Power function: Se observa como bajo la nula toma probabilidades cercanas a cero, e inmediatamente bajo la alternativa su proabilidad va incrementando hasta tender a uno, i.e., la probabilidad de rechazar cuando la alternativa es cierta es cada vez mayor.
+```{r}
+# probabilidad de cometer el error tipo 2
+sigma <- 4.8
+sigma2 <- sigma^2
+n <- 35
+xalpha <- (sigma/sqrt(n))*qnorm(1-.05)+x0 
+b <- pnorm(xalpha, xA, sigma2/n ) # error tipo 2
+
+
+power <- 1- pnorm(xalpha, xA, sigma2/n ) 
+
+#power function
+xseq <- seq(48,56,.1)
+plot(xseq, (pnorm(xseq, xA, sigma2/n )), type = "l", main = "Power function", ylab = "p", xlab = "")
+abline(.5,0)
+axis(1,at=c(mean(xseq)),
+     pos = c(0,10),
+     labels=c(expression(theta)))
+```
+Cambiando la $H_{A}$ a $53$, se observa como la probabilidad de incurrir al error tipo 2 disminuye.
+```{r}
+xbarra <- 52.7
+sigma <- 4.8
+n <- 35
+x0 <- 50
+
+
+x <- seq(45,54,by=0.1)
+y <- dnorm(x,50, 4.8/sqrt(n)) # momentos de x barra estimación de mu
+right <- (sigma/sqrt(n))*qnorm(1-.05)+x0 # tamaño de muestra para x barra a partir del cual rechazan
+plot(x,y,type="l",xaxt="n",ylab="p",
+     xlab=expression(paste('Assumed Distribution of ',bar(x))),
+     axes=FALSE,ylim=c(0,max(y)*1.05),xlim=c(min(x),max(x)),
+     frame.plot=FALSE)
+
+axis(1,at=c(45,right,x0,54),
+     pos = c(0,0),
+     labels=c(expression(' '),expression(bar(x)[alpha]),expression(mu[0]),expression(' ')))
+axis(2)
+#axis(1)
+xReject <- seq(right,54,by=0.01)
+yReject <- dnorm(xReject,50, 4.8/sqrt(n))
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='red')
+# BAJO LA ALTERNATIVA
+xA <- 53
+x <- seq(45,54,0.1)
+y <- dnorm(x,xA, 4.8/sqrt(n)) # momentos de x barra estimación de mu
+right <- (sigma/sqrt(n))*qnorm(1-.05)+x0 # tamaño de muestra para x barra a partir del cual rechazan
+lines(x,y)
+xReject <- seq(45,xalpha,by=0.01)
+yReject <- dnorm(xReject,xA, 4.8/sqrt(n))
+polygon(c(xReject,xReject[length(xReject)],xReject[1]),
+        c(yReject,0, 0), col='lightskyblue')
+```
+EJERCICIO Extra 4 Diap. 334
+---------------
+
+En la sección de ejercicios extras no se pretende pedir puntuación extra, sólamente se hace por cuestiones morales ya que más de una vez la Dra. ha mencionado que es de buen ejercicio replicar las notas. De esta manera, solamente se replican resultados y gráficos.
+
+Gráfico de la potencia de la prueba
+En esta gráfica se muestra la potencia de la prueba para los distintos valores de $\mu$ tanto en la Hipótesis Alternativa como en la Nula.
+La cual nos indica cuando se rechaza la nula cuando no es plausible.
+```{r}
+rm(list = ls())
+H0 <- 50
+Ha <- 51.4
+sigma <- 23.04
+n <- 35
+z <- qnorm(1-.05)
+# potencia de la prueba
+EstPrueba <- (-z + ((sqrt(n)*(Ha - H0))/sqrt(sigma)))
+powerbeta <- pnorm(EstPrueba)
+errorTipo2B <- pnorm(z - ((sqrt(n)*(Ha - H0))/sigma))
+#POTENCIA DE UNA PRUEBA
+Ha <- seq(49, 54, .01)
+plot(Ha,pnorm((-z + ((sqrt(n)*(Ha - H0))/sqrt(sigma)))), type = "l")
+abline(.5, 0)
+abline(.05, 0, col="red")
+```
+Como se observa, para valores de $\mu$  menores al de la nula, la potencia es menor a .05.
+
+EJERCICIO Extra 5 Diap. 340
+---------------
+
+En la sección de ejercicios extras no se pretende pedir puntuación extra, sólamente se hace por cuestiones morales ya que más de una vez la Dra. ha mencionado que es de buen ejercicio replicar las notas. De esta manera, solamente se replican resultados y gráficos.
+
+Rendimiento de combustible y el deseo de los consumidores de verificar  lo que dice el fabricante
+```{r}
+rm(list = ls())
+datavar <- read.csv("C:/Users/h_air/Desktop/CIMAT MCE/Semestre_1/Inferencia Estadística/Tareas/Tarea 6/datvar.txt", header=FALSE)
+
+```
+ PASO 1. Revisar que la muestra provenga de una distribución normal.
+ 
+Se realiza prueba de normalidad Shaphiro-Wilks,
+```{r}
+shapiro.test(datavar$V2)
+```
+Se observa el esta´distico se acerca a uno, de esta manera, se puede decir que la muestra proviene de una normal.
+
+Se contrasta con la prueba Jarquer-Bera
+```{r}
+suppressMessages(library(fBasics))
+jarqueberaTest(datavar$V2)
+```
+$H_{0}$ Normalidad, No se tiene evidencia suficiente para rechazar la $H_{0}$.
+
+Ahora, se realiza un boxplot.
+```{r}
+boxplot(datavar$V2)
+```
+
+Se observa un poco de sesgo, cargada un poco a la derecha. Se observa como su valor medio se encuentra un poco cargado.
+
+A continuación se reaiza un QQ-plot, para contrastar los cuantiles de la distribución empirica respecto a la teórica.
+```{r}
+suppressMessages(library(fBasics))
+qqnormPlot(datavar$V2)
+```
+
+```{r}
+g = datavar$V2
+m<-mean(g)
+std<-sqrt(var(g))
+hist(g, density=10, breaks=10, prob=TRUE, 
+     xlab="x-variable", 
+     main="normal curve over histogram")
+curve(dnorm(x, mean=m, sd=std), 
+      col="darkblue", lwd=2, add=TRUE, yaxt="n")
+```
+Se observa que los datos tratan de aproximar a la normal, sin embargotanto en colas y ligeramente en el centro, no lo logran en su totalidad.
+
+Se concluye que la muestra probiene de una distribución normal.De esta maner, conocemos la distribución del estadístico de prueba y podemos fijar regiones de rechazo y calcular p-valores dada las hipótesis que estemos considerando.
+
+EJERCICIO Extra 6 Diap. 350
+---------------
+
+En la sección de ejercicios extras no se pretende pedir puntuación extra, sólamente se hace por cuestiones morales ya que más de una vez la Dra. ha mencionado que es de buen ejercicio replicar las notas. De esta manera, solamente se replican resultados y gráficos.
+
+Potencia de la prueba para  la varianza.
+$_{0} : \sigma^{2} \leq 0.0025$ vs $H_{A}: \sigma^{2} > 0.0025$  
+
+```{r}
+# Estadístico de prueba para la arianza bajo la nula se distribuye 
+# chi cuadrada con n-1 gl.
+rm(list = ls())
+sigma2H0 <- 0.0025
+n <- 26
+s2est <- 0.00335
+u <- ((n-1)*s2est)/sigma2H0
+sigma2H0.sigma2Ha <- c(1, 0.66,0.5,0.33,0.25,0.2)
+criticalValue <-qchisq(1-.05,n-1)
+```
+Variando cociente (DIAPOSITIVA 351)
+```{r}
+chi<-qchisq(.95,n-1)
+power<-sapply(sigma2H0.sigma2Ha, powerFunction <- function(x) {
+  1-pchisq(chi*x, n-1)
+})
+```
+
+
