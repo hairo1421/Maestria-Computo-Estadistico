@@ -24,11 +24,21 @@ computacional
 * Tarea 4
 * Tarea 5
 * Tarea 6
+* Examen 1
+* Examen 2
 * Proyecto : Estadística Multivariada
 ANALISIS DE ESTADISTICAS DE BEISBOL. Proyecto realizado con Angel Dominguez de CIMAT Monterrey
-* Examen:
-### Análisis Numérico y Optimización 
 
+### Análisis Numérico y Optimización 
+#### Métodos Númericos :
+* Tarea 1
+* Tarea 2
+* Tarea 3
+#### Optimización :
+* Tarea 1
+* Proyecto: Análisis Envolvente de Datos (DEA);
+aplicación en la medición de la eficiencia
+bancaria en México.
 ### Ciencia de Datos
 * Tarea 1
 * Tarea 2
@@ -37,7 +47,9 @@ ANALISIS DE ESTADISTICAS DE BEISBOL. Proyecto realizado con Angel Dominguez de C
 * Tarea 5
 * Tarea 6
 * Tarea 7
-* Proyecto : 
+* Proyecto : Análisis exploratorio de las minutas del banco
+central de Inglaterra y su relación con la tasa
+de interés; 1997 al 2014.
 
 # Tercer Semestre
 
