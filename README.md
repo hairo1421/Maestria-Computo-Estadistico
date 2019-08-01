@@ -2,7 +2,7 @@
 Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
 # Propedeutico
-#### Programación en C
+### Programación en C
 * Tarea 1
 * Tarea 2
 * Tarea 3
@@ -11,7 +11,7 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 * Tarea 6
 
 # Primer Semestre
-#### Inferencia Estadística 
+### Inferencia Estadística 
 * Tarea 1
 * Tarea 2
 * Tarea 3
@@ -21,7 +21,7 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 * Tarea 7
 * Proyecto: El filtro de Kalman y su aplicación como método de
 imputación.
-#### Programación y Análisis de Algoritmos
+### Programación y Análisis de Algoritmos
 * Tarea 1
 * Tarea 2
 * Tarea 3
@@ -34,7 +34,7 @@ mediana, varianza y desviación estándar. Un enfoque
 computacional
 
 # Segundo Semestre
-#### Estadística Multivariada
+### Estadística Multivariada
 * Tarea 1
 * Tarea 2
 * Tarea 3
@@ -56,7 +56,7 @@ ANALISIS DE ESTADISTICAS DE BEISBOL. Proyecto realizado con Angel Dominguez de C
 * Proyecto: Análisis Envolvente de Datos (DEA);
 aplicación en la medición de la eficiencia
 bancaria en México.
-#### Ciencia de Datos
+### Ciencia de Datos
 * Tarea 1
 * Tarea 2
 * Tarea 3
@@ -70,8 +70,8 @@ de interés; 1997 al 2014.
 
 # Tercer Semestre
 
-#### Cómputo Estadísitco 
+### Cómputo Estadísitco 
 
-#### Temas Selectos en Estadística (Matrices aleatorias y Series de Tiempo)
+### Temas Selectos en Estadística (Matrices aleatorias y Series de Tiempo)
 
-#### Temas Selectos en Ciencia de datos (Deep Learning, NLP, Señales)
+### Temas Selectos en Ciencia de datos (Deep Learning, NLP, Señales)
