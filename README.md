@@ -1,6 +1,11 @@
 # Maestria-Computo-Estadistico
 Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
+# Propedeutico
+* Matemáticas
+* Programación 
+* Estadística 
+
 # Primer Semestre
 ### Inferencia Estadística 
 * Proyecto: 
