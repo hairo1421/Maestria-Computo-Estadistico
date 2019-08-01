@@ -7,6 +7,13 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
 # Primer Semestre
 ### Inferencia Estadística 
+* Tarea 1
+* Tarea 2
+* Tarea 3
+* Tarea 4
+* Tarea 5
+* Tarea 6
+* Tarea 7
 * Proyecto: El filtro de Kalman y su aplicación como método de
 imputación.
 ### Programación y Análisis de Algoritmos
