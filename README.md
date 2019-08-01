@@ -10,7 +10,11 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 ### Inferencia Estadística 
 * Proyecto: 
 ### Programación y Análisis de Algoritmos
-* Proyecto: 
+* Proyecto: Estimación del error estándar para la construcción de
+intervalos de confianza mediante la técnica Boostrap
+(no paramétrico) a los estadísticos de la media,
+mediana, varianza y desviación estándar. Un enfoque
+computacional
 
 # Segundo Semestre
 ### Estadística Multivariada
