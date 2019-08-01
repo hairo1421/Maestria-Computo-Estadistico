@@ -1,2 +1,0 @@
-El curso propedeutico de computo estadistico del CIMAT Monterrey, consta de tres bloques:
-El primero es programacion; el segundo matematicas y el tercero el de estadistica.
