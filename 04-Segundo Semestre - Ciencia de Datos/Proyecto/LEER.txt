@@ -1,0 +1,18 @@
+INSUMOS XLSX:
+
+*Minutas xlsx: información fechas minutas 
+*Bank of England  Database xlsx: información tasa interés
+*TASA DE INTERES DIARIA.xlsx: modificación archivos anteriores
+*TASA DE INTERES DIARIA un dia antes.xlsx:  Tasa interés un día antes de la minuta
+*TASA DE INTERES DIARIA un dia despues.xlsx: Tasa de interés un día despues
+*TASA DE INTERES DIARIA paper.xlsx: omitiendo el efecto de la públicación de la minuta
+*Contraste. xlsx: tasas del día de la públicación de la minuta, antes y despues
+*Contraste_clasificador.xlsx: base anterior pero con variable que clasifica el impacto de los tópicos respecto a la tasa de interés
+
+ARCHIVOS .R
+*(1) Limpieza de base Tasa de interés: genera serie de tiempo de la tasa de interés de las fechas de la minuta
+*(2) Minutas PDF a TXT: Convierte las minutas PDF a txt
+*(3) Proyecto Final: Todo lo que se observa en el docuento
+
+R WORKSPACE
+version7: se guarda la última corrida donde se observan los resultados del documento
