@@ -1,0 +1,233 @@
+---
+title: "Tarea 8  Estadística Multivariada"
+author: "Hairo Ulises Miranda Belmonte"
+date: "23 de Mayo del 2019"
+output:
+  html_document:
+    code_folding: hide #echo=TRUE hide code its default
+    
+    toc: true
+    toc_float: true
+    # number_sections: true
+    theme: readable
+    highlight: textmate 
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+       
+    
+---
+
+
+
+
+Este conjunto de datos fue estudiado por Madsen (1976) para las condiciones de alojamiento en areas seleccionadas de Copenhague, Dinamarca.
+Un total de 1; 681 residentes rentando en casas construidas durante el periodo de 1960-1968 fueron seleccionados para contestar una encuesta acerca de su nivel de satisfaccion (ca-tegorizado como bajo (ls), medio (ms), alto (hs)), el nivel de contacto con otros residen-tes (bajo (lc),alto (hc)), y su sensacion de inuencia sobre el manejo de su vivienda (bajo (li),medio (mi),alto (hi)). Las unidades de renta fueron categorizadas como towe blocks (tb),apartamentos (ap), atrium houses (ah) y casas con terraza (th).
+El proposito del estudio es identicar si existe algun asociacion entre el grado de contacto,inuencia, satisfaccion, y el tipo de vivienda.
+Aplique el Analisis de Correspondencia Multiple al archivo adjuto y explique las asociaciones principales de cada eje.
+
+* Diga si existen asociaciones signicativas entre los pares de variables categoricas al nivel de signicancia de $0.05$.
+
+* Explique y justique el por que es posible reducir dimensión directamente sobre la tabla $( 1nQY )$ cuando naturalmente uno deberia de realizar el análisis sobre los bloques no diagonales de Y .
+
+```{r message=FALSE}
+library("tidyverse")
+library("magrittr")
+library("readxl")
+library("knitr")
+library("kableExtra")
+library("ca")
+library("FactoMineR"); library("factoextra")
+getwd()
+setwd("C:/Users/h_air/Desktop/Tarea 8")
+datos <- read.csv("ejemplo_mca.csv", header = F)
+
+names(datos) <- c("tb","ap","ah","th","li","mi","hi","lc","hc","ls","ms","hs")
+labels <- c("tb","ap","ah","th","li","mi","hi","lc","hc","ls","ms","hs")
+datos <-cbind(labels, datos)
+datos %>% column_to_rownames(var="labels")
+
+
+
+```
+
+Ejercicio 1
+--------------
+
+
+```{r}
+datos <- datos %>% column_to_rownames(var="labels")
+nrow<-nrow(datos)
+ncol<-ncol(datos)
+n<-sum(datos)
+
+#se calcula la chi cuadrada para probar la independencia de los renglones y columnas de la tabla de contingencia y la inercia total (medida de la
+#variabilidad total de los datos en la tabla)
+
+# Entre pares
+chiTest <- function(X){
+  chiR<-chisq.test(X)
+  inetot<-chiR$statistic/n
+  return(list(chi=chiR,Itot=inetot))
+}
+
+```
+
+Se realizan las pruebas chi-cuadrada:
+
+
+$H_0$ asume que no hay relación entre las varianles; i.e., una variable no varía respecto otras. $H_a$ indica que existe alguna especie de relación entre las variables.
+
+Se prueba independencia de los renglones y columna de la tabla de contigencia de la relación $X_{12}$
+
+```{r}
+X12 <-datos[1:4,5:7]
+X12crit <- chiTest(X12)
+X12crit
+```
+
+Con un p valor menor al 0.05, se tiene evidencia para rechazar la $H_o$ de independencia, por lo tanto existe alguna especie de relación en $X_{12}$
+
+```{r}
+X13 <-datos[1:4,8:9]
+X13crit <- chiTest(X13)
+X13crit
+```
+
+Con un p valor menor al 0.05, se tiene evidencia para rechazar la $H_o$ de independencia, por lo tanto existe alguna especie de relación en $X_{13}$
+
+
+
+relación $X_{14}$
+
+```{r}
+X14 <-datos[1:4,10:12]
+X14crit <- chiTest(X14)
+X14crit
+```
+
+Con un p valor menor al 0.05, se tiene evidencia para rechazar la $H_o$ de independencia, por lo tanto existe alguna especie de relación en $X_{14}$
+
+relación $X_{23}$
+
+```{r}
+X23 <-datos[5:7,8:9]
+X23crit <- chiTest(X23)
+X23crit
+```
+
+Con un p valor menor al 0.05, se tiene evidencia para rechazar la $H_o$ de independencia, por lo tanto existe alguna especie de relación en $X_{23}$
+
+relación $X_{24}$
+
+```{r}
+X24 <-datos[5:7,10:12]
+X24crit <- chiTest(X24)
+X24crit
+```
+
+Con un p valor menor al 0.05, se tiene evidencia para rechazar la $H_o$ de independencia, por lo tanto existe alguna especie de relación en $X_{24}$
+
+relación $X_{34}$
+
+```{r}
+X34 <-datos[10:12,8:9]
+X34crit <- chiTest(X34)
+X34crit
+```
+
+Con un p valor mayor al 0.05, no se tiene evidencia para rechazar la $H_o$ de independencia, por lo tanto no existe alguna especie de relación en $X_{34}$
+
+Ejercicio 2
+--------------
+
+Ahora se visualiza en dos dimensiones los punto de la matriz de Burt.
+
+```{r}
+# Se calcula la matriz F de frecuencias relativas o matriz de correspondencia
+
+F_datos<-(datos)/n
+#se calculan las frecuencias relativas de las filas y de las columnas de F  o tambien llamadas masas (las ri y las cj)
+rtot<-(apply(datos,1,sum))/n
+ctot<-apply(datos,2,sum)/n
+# los vectores obtenidos se  colocan en las matrices diagonales correspondientes (Dr y Dc)
+Dr<-diag(rtot)
+Dc<-diag(ctot)
+# se calcula la matriz de perfiles por fila (R)
+table.pro<-datos/rtot  #matriz R de renglones
+# se calcula la matriz de perfiles por columna (Rc)
+table.pcol<- t(t(datos)/ctot)  #matriz R de columnas
+#se calcula la chi cuadrada y la inercia total
+t.rowsum<-n*rtot
+t.colsum<-n*ctot
+tabla_exp<-t.rowsum%o%t.colsum/n
+chi2<- sum((datos-tabla_exp)^2/tabla_exp)
+inetot<-chi2/n
+#se calcula la matriz Z
+Z <-(sqrt(solve(Dr)))%*%as.matrix(F_datos)%*%(sqrt(solve(Dc)))
+#se obtienen los vectores propios y valores propios mediante la descomposicion en valores singulares de Z
+dvalsing<-svd(Z )
+#Se obtienen las representaciones de las filas y columnas en un espacio de dos dimensiones considerando los vectores propios ai y bi obtenidos de la dvs
+#OJO:se consideran solo los vectores propios asociados a valores propios distintos de 1, en este caso se consideran las columnas 2 y 3 de las matrices U y V
+#de la dvs.
+ind<-c(2,3)
+#Representacion de las filas en dos dimensiones
+Cr<-(sqrt(solve(Dr)))%*%Z%*%dvalsing$v[,ind]
+#Representacion de las columnas en dos dimensiones
+Cc<-(sqrt(solve(Dc)))%*%t(Z)%*%dvalsing$u[,ind]
+#se calcula la proporcion de la inercia explicada por las dos  dimensiones (asociadas a valores propios distintos de cero)
+vp<-(dvalsing$d)^2
+vp_dist1<-vp[-1]
+vp_dist1
+var_expl <- sum(vp_dist1[1:2])/sum(vp_dist1)
+# Se obtiene la representacion conjunta de los renglones y columnas en el espacio de dos dimensiones
+uno <- rep("red", 4)
+dos <- rep("blue", 3)
+tres <- rep("orange", 2)
+cuatro<- rep("purple", 3)
+colores <- c(uno,dos,tres,cuatro)
+
+#Se calculan las distancias chi cuadrada de cada renglon de R a su centroide: (Ra-c)'Dc^-1(Ra-c)
+dist.chicua.ren<-sqrt(apply((t(table.pro)-ctot)^2/ctot,2,sum))
+
+#se calcula la inercia de cada renglon, que se obtiene simplemente multiplicando las distancia chicuadrada a su centroide (al cuadrado) por su masa correspondiente
+inercia.ren<-((dist.chicua.ren)^2) *rtot
+
+
+#Se calculan las distancias chi cuadrada de cada columna de R a su centroide: (Ra-c)'Dr^-1(Ra-c)
+dist.chicua.col<-sqrt(apply(((table.pcol)-rtot)^2/rtot,2,sum))
+
+#se calcula la inercia de cada columna, que se obtiene simplemente multiplicando las distancia chicuadrada a su centroide (al cuadrado) por su masa correspondiente
+inercia.col<-((dist.chicua.col)^2) *ctot
+
+
+Cr %>% as.data.frame %>% ggplot() + 
+  aes(x=V1, y=V2,  label = rownames(datos)) + 
+  geom_text( col=colores) + labs(x="Dimensión 1", y="Dimensión 2")
+
+```
+
+
+Se observa que para el eje de la dimensión uno, estar representados por las variables  casas con terraza (th), sensación de influencia sobre el manejo de su vivienda bajo (li) y alto (hi), satisfacción baja (ls) y alta (hs).
+
+En el eje dos, puede estar representado por los residentes con unidades de renta categorizadas como atrium houses (ah), el nivel de contacto con otros residentes alto (hc) y nivel de satifacción medio (ms).
+
+
+Donde los residente con casa con terraza (th) se relacionan con la sensación del manejo de su vivienda baja (li) y reportan nivel de satisfacción baja (li). Por otro lado, los residentes con manejo de vida alto (hi), se relacionan con aquellos que reportaron un nivel de satisfacción alto (hs).
+
+
+Aquellos residentes que reportan de niveles medios en el contacto con otros residentes (hc), se relacionan de alguna manera con aquellos que reportaron un nivel de satisfacción medio (ms); por otro lado, se presenta una relación entre los residentes que viven en apartamentos (ap) y los residentes que sienten una influencia sobre el manejo de su viviendo a un nivel medio (mi), cabe mencionar que estás dos categorias de sus respectivas variables, pueden no estár bien representadas por las primeras dos dimensiones dado a su posición en el espacio de la representacón de renglones y columnas.
+
+
+Ejercicio 3
+--------------
+
+Explicando el porque se puede realizar la reducción de dimensiones con la matrix Burt.
+
+Por la simétria de la matriz de Burt, un análisis de correspondencia simple en ella produce el mismo conjunto de coordenadas  filas y columnas, así que uno de los dos conjuntos pueden ser ignorados; asimismo, las filas estándar de las filas de la matriz de Burt son identicas a las coordenadas estándar de las filas de $Z$, la matriz con la que trabajamos para obtener la reducción de dimensiones, de esta fomra las principales coordenadas obtenidas al análizar la matriz de Burt está directamente relacionadas a las obtenidas con $Z$, porque las inercias principales de la matriz de Burt son el cuadrado de las $Z$.
+
+
+
+
+
+
