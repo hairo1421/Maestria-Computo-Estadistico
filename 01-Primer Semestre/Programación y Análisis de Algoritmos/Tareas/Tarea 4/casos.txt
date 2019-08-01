@@ -1,0 +1,12 @@
+Falta restringir fechas.
+Falta ir de adelante hacia atras (Listo para caso 0 y 1)
+Caso 0: mismo día, mismo mes, mismo año. (listo)
+Caso 1: mismo mes, mismo año (listo)
+Caso 2: mismo día, mismo año (Se acerca, no resta)
+caso 3: mismo año (Se acerca, no resta)
+caso 4: todos distintos (Se acerca, no resta)
+
+Falta restringir que no de fechas mayores
+Falta ver porque subestima 
+falta indexar
+

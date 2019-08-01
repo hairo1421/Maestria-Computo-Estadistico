@@ -1,0 +1,15 @@
+Registro  Herramienta                   Cantidad      Costo
+3         Pulidora                       7          57.98
+
+17        Martillo                       76         11.99
+
+24        Sierra                         21         11.00
+
+39        Podadora                       3          79.50
+
+56        SierraElectrica                18         99.99
+
+68        Destornillador                 106         6.99
+
+83        LlavedeTuercas                 34          7.50
+
