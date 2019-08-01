@@ -1,0 +1,137 @@
+---
+title: "Tarea 6 Inferencia Estadística"
+author: "Hairo Ulises Miranda Belmonte"
+date: "26 de Noviembre de 2018"
+output:
+  html_document:
+    code_folding: hide #echo=TRUE hide code its default
+    
+    toc: true
+    toc_float: true
+    # number_sections: true
+    theme: readable
+    highlight: textmate 
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+       
+    
+---
+
+EJERCICIO 1
+---------------
+
+Sean X - Binomial(n1, p1) y Y - Binomial(n2, p2), se quiere estimar $\lambda$= p2 $???$ p1. Use la priori f(p1, p2) = f(p1)f(p2) = 1, para hallar la posterior f($\lambda$|xn). Halle tambi´en la media posteriori y la densidad posteriori de $\lambda$.
+
+Se realizaran 1000  simulaciones, asumiendo los valores de las variables y las muestras.
+```{r}
+B<- 1000 # simulaciones
+x1 <- 40 
+n1 <- 50
+x2 <- 30
+n2 <- 50
+```
+
+Dado que bajo la posterior, tanto p1 como p2 son independientes, entonces para obtener la distribución de la posterior realizamos obtenemos B observaciones de la posterior, en este caso de cda p1 y p2
+```{r}
+# muestra de las posterior
+p1 <- rbeta(B, x1+1, n1-x1+1)
+p2 <- rbeta(B, x2+1, n2-x2+1)
+```
+observamos como la media de p1 y p2 bajo la posteror se aproximan a la media estimada por verosiilitud
+```{r}
+# media de maxima verosimilitud aproximada a postrior
+postmean<-mean(p1)
+meanML <-x1/n1     
+cat("Media posteriori P1", postmean, "\n")
+cat("Estadístico de máxima Verosimilitud de P1", meanML, "\n")
+postmean2<-mean(p2)
+meanML2 <-x2/n2     
+cat("Media posteriori P2", postmean2, "\n")
+cat("Estadístico de máxima Verosimilitud de P2", meanML2, "\n")
+```
+Realizamos la transformacion de la variable y observamos la media posterior de 
+la función, y obtenemos su densidad al reaizar el histograma
+```{r}
+# realizando la transformacion de la variable
+tau <- p1-p2
+meantau <- mean(tau)
+cat("Media posteriori de la transformación", mean(tau), "\n")
+hist(tau)
+```
+Se puede observar la densidad de la trasformación 
+o más bien, la posterior de tau.
+
+EJERCICIO 2
+---------------
+
+2. Sean X1, . . . , Xn Normal(µ, 1)
+
+a) Simule un conjunto de datos (use µ = 5) de n = 100 observaciones.
+Generar sample con media de cinco.
+```{r}
+x <- rnorm(100,5,1)
+mu <- 5
+prior <- 1
+```
+b) Tome f(µ) = 1 y halle la densidad posteriori. Grafique la densidad.
+La posteriror es una normal con media del estimador de máxima verosimilitud
+Con base al sample generamos las observaciones de la posterior.
+
+```{r}
+posterior <- dnorm(x,mean(x),1)
+plot(density(posterior))
+```
+Como se puede observar , no se distribuye como una normal
+. Sin embargo, necesitamos varias observaciones para que esto suceda.
+
+c) Simule 1000 observaciones de la posteriori. Grafique un histograma y compare con la densidad del punto anterior.
+```{r}
+
+# 1000 simulaciones de la posterior}
+
+posteriorB <-replicate(1000,rnorm(1,mean(x),1))
+hist(posteriorB)
+meanpost<- mean(posteriorB)
+cat("Media posteriori ", meanpost, "\n")
+# al realizar mil observaciones de una posterior y utilizar el histograma, ya parece normal
+```
+Podemos observar que la posterior al realizar varias simulaciones y tomar su media, se aproxima a la media del estadístico de la verosimilitud de unna normal.
+
+d) Sea ?? = eµ. Halle la densidad posteriori para ?? de forma anal´itica y por simulaci´on.
+
+Realizamos una transformación 
+```{r}
+posteriro <- rnorm(1000, mean(x),1)
+hist(posteriro)
+mediapos<-mean(posteriro)
+cat("Media posteriori ", mediapos, "\n")
+```
+e) Halle un intervalo posteriori del 95 % para ??.
+
+construimos intervalos de confianza posteriori
+```{r}
+IC <- c(quantile(posteriro,.05/2), quantile(posteriro,1-.05/2))
+cat("Intervalos de confianza posteriori ", IC, "\n")
+```
+En base a conocer la distribución de la transformación, las B observaciones generadas por la posterior, se evaluand en la transformacion.
+```{r}
+theta <- exp(posteriro)
+hist(theta)
+media<-mean(theta)
+cat("Media posterior transformación ", media, "\n")
+```
+Se pued eobservar que la función se comporta como una exponencial.
+Realizamos su intervalo posteriori a la transformación
+```{r}
+ICPosterior <- c(quantile(theta,.05/2),quantile(theta,1-.05/2)) 
+cat("Intervalos de confianza posteriori ",ICPosterior , "\n")
+
+```
+f ) Halle un intervalo de confianza del 95 % para ??
+```{r}
+
+z <- qnorm(1-.05/2)
+ICNormal<- c(mean(theta)-z, mean(theta)+z)
+cat("Intervalos de confianza normal ", ICNormal, "\n")
+```
