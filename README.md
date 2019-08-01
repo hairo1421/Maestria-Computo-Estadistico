@@ -3,7 +3,12 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
 # Propedeutico
 #### Programación en C
-
+* Tarea 1
+* Tarea 2
+* Tarea 3
+* Tarea 4
+* Tarea 5
+* Tarea 6
 
 # Primer Semestre
 #### Inferencia Estadística 
