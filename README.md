@@ -35,12 +35,11 @@ computacional
 
 # Segundo Semestre
 ### Estadística Multivariada
-* Tarea 1
 * Tarea 2
-* Tarea 3
-* Tarea 4
 * Tarea 5
 * Tarea 6
+* Tarea 7
+* [Tarea 8](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/02-Segundo%20Semestre%20-%20Estad%C3%ADstica%20Multivariada/Tarea%208/Tarea%208%20Hairo%20Ulises%20Miranda%20Belmonte.html)
 * Examen 1
 * Examen 2
 * Proyecto : Estadística Multivariada
