@@ -56,16 +56,16 @@ ANALISIS DE ESTADISTICAS DE BEISBOL. Proyecto realizado con Angel Dominguez de C
 aplicación en la medición de la eficiencia
 bancaria en México.
 ### Ciencia de Datos
-* Tarea 1
-* Tarea 2
-* Tarea 3
-* Tarea 4
-* Tarea 5
-* Tarea 6
-* Tarea 7
-* Proyecto : Análisis exploratorio de las minutas del banco
+* [Tarea 1](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%201/Tarea%201.pdf)
+* [Tarea 2]()
+* [Tarea 3]()
+* [Tarea 4]()
+* [Tarea 5]()
+* [Tarea 6]()
+* [Tarea 7]()
+* [Proyecto : Análisis exploratorio de las minutas del banco
 central de Inglaterra y su relación con la tasa
-de interés; 1997 al 2014.
+de interés; 1997 al 2014.]()
 
 # Tercer Semestre
 
