@@ -12,6 +12,7 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
 # Primer Semestre
 ### Inferencia Estadística 
+(link en azul solo ejercicios implementados en R el resto en su respectiva carpeta)
 * [Tarea 1](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%201/Ejercicios%20en%20R/Tarea1_IE.html)
 * Tarea 2
 * [Tarea 3](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%203/Ejercicios%20en%20R/Tarea_3_Miranda_Belmonte_Hairo_Ulises.html)
