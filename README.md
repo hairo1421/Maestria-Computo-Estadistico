@@ -12,13 +12,13 @@ Maestria-Computo-Estadistico CIMAT 2018-2019 (proyector y tareas)
 
 # Primer Semestre
 ### Inferencia Estadística 
-* Tarea 1
+* [Tarea 1](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%201/Ejercicios%20en%20R/Tarea1_IE.html)
 * Tarea 2
-* Tarea 3
-* Tarea 4
-* Tarea 5
-* Tarea 6
-* Tarea 7
+* [Tarea 3](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%203/Ejercicios%20en%20R/Tarea_3_Miranda_Belmonte_Hairo_Ulises.html)
+* [Tarea 4](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%204/Ejercicios%20en%20R/Tarea%204.html)
+* [Tarea 5](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%205/Ejercicios%20en%20R/Tarea%205.html)
+* [Tarea 6](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%206/Ejercicios%20en%20R/Tarea_6_Miranda_Belmonte_Hairo_Ulises_Inferencia.html)
+* [Tarea 7](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/01-Primer%20Semestre/Inferencia%20Estad%C3%ADstica/Tareas/Tarea%207/Ejercicios%20en%20R/Tarea7_Miranda_Belmonte_Hairo_Ulises.html)
 * Proyecto: El filtro de Kalman y su aplicación como método de
 imputación.
 ### Programación y Análisis de Algoritmos
