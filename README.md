@@ -47,11 +47,11 @@ ANALISIS DE ESTADISTICAS DE BEISBOL. Proyecto realizado con Angel Dominguez de C
 
 ### Análisis Numérico y Optimización 
 #### Métodos Númericos :
-* Tarea 1
-* Tarea 2
+* [Tarea 1](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/03-Segundo%20Semestre%20-%20An%C3%A1lisis%20Num%C3%A9rico%20y%20Optimizaci%C3%B3n/M%C3%A9todos%20N%C3%BAmericos/Tarea%201/Soluci%C3%B3n/Tarea%201%20M%C3%A9todos%20N%C3%BAmericos%20Hairo%20Miranda.ipynb)
+* [Tarea 2](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/03-Segundo%20Semestre%20-%20An%C3%A1lisis%20Num%C3%A9rico%20y%20Optimizaci%C3%B3n/M%C3%A9todos%20N%C3%BAmericos/Tarea%202/Soluci%C3%B3n/Tarea%202%20Metodos%20Numericos.ipynb)
 * Tarea 3
 #### Optimización :
-* Tarea 1
+* [Tarea 1](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/03-Segundo%20Semestre%20-%20An%C3%A1lisis%20Num%C3%A9rico%20y%20Optimizaci%C3%B3n/Optimizaci%C3%B3n/Tarea_1_Hairo_Ulises_Miranda_Belmonte.html)
 * Proyecto: Análisis Envolvente de Datos (DEA);
 aplicación en la medición de la eficiencia
 bancaria en México.
