@@ -57,12 +57,12 @@ aplicación en la medición de la eficiencia
 bancaria en México.
 ### Ciencia de Datos
 * [Tarea 1](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%201/Tarea%201.pdf)
-* [Tarea 2]()
-* [Tarea 3]()
-* [Tarea 4]()
-* [Tarea 5]()
-* [Tarea 6]()
-* [Tarea 7]()
+* [Tarea 2](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%202/Soluci%C3%B3n/Tarea%202%20reporte.pdf)
+* [Tarea 3](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%203/Soluci%C3%B3n/Tarea%203%20Miranda%20Belmonte%20Hairo.pdf)
+* [Tarea 4](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%204/Soluci%C3%B3n/Tarea%204%20Miranda%20Belmonte%20Hairo.pdf)
+* [Tarea 5](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%205/Soluci%C3%B3n/Tarea%205%20Miranda%20Belmonte%20Hairo.pdf)
+* [Tarea 6](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%206/Soluci%C3%B3n/Tarea%206%20Miranda%20Belmonte%20Hairo.pdf)
+* [Tarea 7](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%207/Tarea%207.pdf)
 * [Proyecto : Análisis exploratorio de las minutas del banco
 central de Inglaterra y su relación con la tasa
 de interés; 1997 al 2014.]()
