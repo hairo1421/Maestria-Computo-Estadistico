@@ -65,7 +65,7 @@ bancaria en México.
 * [Tarea 7](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Tareas/Tarea%207/Tarea%207.pdf)
 * [Proyecto : Análisis exploratorio de las minutas del banco
 central de Inglaterra y su relación con la tasa
-de interés; 1997 al 2014.]()
+de interés; 1997 al 2014.](https://github.com/hairo1421/Maestria-Computo-Estadistico/blob/master/04-Segundo%20Semestre%20-%20Ciencia%20de%20Datos/Proyecto/Presentaci%C3%B3n%20Hairo%20Belmonte.pdf)
 
 # Tercer Semestre
 
