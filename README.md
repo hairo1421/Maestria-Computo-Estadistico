@@ -35,10 +35,10 @@ computacional
 
 # Segundo Semestre
 ### Estadística Multivariada
-* Tarea 2
-* Tarea 5
-* Tarea 6
-* Tarea 7
+* [Tarea 2](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/02-Segundo%20Semestre%20-%20Estad%C3%ADstica%20Multivariada/Tarea%202/Tarea_2_Miranda_Blemonte_Hairo_Ulises.html)
+* [Tarea 5](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/02-Segundo%20Semestre%20-%20Estad%C3%ADstica%20Multivariada/Tarea%205/Tarea_5_Hairo_Ulises_Miranda_Belmonte.html)
+* [Tarea 6](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/02-Segundo%20Semestre%20-%20Estad%C3%ADstica%20Multivariada/Tarea%206/Tarea%206%20Hairo%20Ulises%20Miranda%20Belmonte.html)
+* [Tarea 7](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/02-Segundo%20Semestre%20-%20Estad%C3%ADstica%20Multivariada/Tarea%207/Tarea_7_Hairo_Ulises_Miranda_Belmonte.html)
 * [Tarea 8](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/02-Segundo%20Semestre%20-%20Estad%C3%ADstica%20Multivariada/Tarea%208/Tarea%208%20Hairo%20Ulises%20Miranda%20Belmonte.html)
 * Examen 1
 * Examen 2
