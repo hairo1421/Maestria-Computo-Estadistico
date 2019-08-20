@@ -1,0 +1,303 @@
+---
+fontsize: 11pt
+title: Tarea 01 Modelo de Bronw
+author: Hairo Ulises Miranda Belmonte
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+#abstract: One or two sentences describing it all.
+header-includes:
+  \usepackage{graphicx}
+  \usepackage{color}
+  \usepackage{fancyhdr}
+  \usepackage{sectsty}
+  \usepackage{animate} 
+  \pagestyle{fancy}
+  \usepackage{setspace}
+  \usepackage{booktabs}
+  \usepackage{float}
+  \usepackage[ruled,vlined,linesnumbered,noresetcount]{algorithm2e}
+  \renewcommand{\figurename}{Figura}
+  \renewcommand{\tablename}{Tabla}
+  \SetKwInput{KwData}{Datos}
+  \SetKwInput{KwResult}{Resultado}
+  \SetAlgorithmName{Algoritmo}{algoritmo}{Lista de algoritmos}
+  \fancyhead[R]{CENTRO DE INVESTIGACIÓN EN MATEMÁTICAS- UNIDAD MTY}
+  \pretitle{\centering \textsc{CENTRO DE INVESTIGACIÓN EN MATEMÁTICAS (CIMAT).\\ UNIDAD MONTERREY} \\ [5pt] \rule{\linewidth}{0.5 pt} \\[0.5 cm] \vspace{\droptitle}\bigskip \centering\huge}
+  \posttitle{\bigskip  \par\rule{\linewidth}{2 pt}}
+  \preauthor{\centering\large}
+  \postauthor{\par}
+  \predate{\centering\large}
+  \postdate{\bigskip  \par}
+  \allsectionsfont{\centering \normalfont\scshape}
+  \numberwithin{equation}{section} 
+  \numberwithin{figure}{section} 
+  \numberwithin{table}{section}
+  \setlength{\headheight}{27pt}
+  \onehalfspace
+output: 
+  pdf_document:
+    number_sections: TRUE
+    keep_tex: TRUE
+    #toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,out.width='60%', fig.pos= "ht",fig.align='center',message=FALSE,  warning = FALSE)
+library(magrittr)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+
+```
+
+En este trabajo se abarca el primer objetivo del paper de Brown J. (1989), describiendo la relación entre valores propios y el número de valores subyacentes a medida que aumenta el número de valores (acciones) en dicha economía. 
+
+Algunos de los resultados relevantes:
+ 
+* Se describe la naturaleza de la solución aproximada de factores y las implicaciones para la fijación de precios de factores.
+
+* El modelo  tiene una fuerte predicción sobre el papel y la importancia del índice de mercado igualmente ponderado.
+
+* Se estudia las  propiedades de muestras pequeñas para la estimación de los valores propios usando datos simulados que provienen de la economía.
+
+* Los valores de los valores propios de la matriz de covarianza de los retornos crecen conforme el número de valores (o acciones) aumentan.
+
+Este último punto se relaciona con el resultado del número de factores que mejor aproximan a los retornos y por ende a su matriz de covarianza.
+
+
+## Metodología
+
+# Parametros
+
+
+Los resultados se obtienen en base a asumir que el investigador cuenta con los parametros de los factores de los retornos.
+
+|Parametros|Valores|
+|----------|-------|
+|b|$1$|
+|$\sigma^2_f$|$0.000158$|
+|$\sigma^2_b$|$0.01$|
+|$\sigma^2_e$|$0.0045$|
+|n|$80$|
+|k|$4$|
+|p|$200-500$|
+
+```{r parametros}
+
+b <- 1
+sigma2_b <- 0.01 
+sigma2_f <- 0.000158
+sigma_e <- 0.0045
+n <- 80
+k <- 4
+i <- c(50:200)
+
+```
+
+
+## Modelo teorico
+
+El modelo deriva los valores propios de una economía de manera analítica, mostrando que los valores propios crecen conforme al número de valores (o acciones), y cómo la aproximación de la solución del factor de la economía se relaciona a la estructura original del factor.
+ 
+Se presentan los primeros 3 valores propios desarrollados de forma analítica (no se explica nada respecto al desarrollo dado a que se explicó en clase).
+
+
+$$
+\lambda_1=\sigma^2_fp(b^2k+\sigma^2_b)+\sigma^2_\epsilon 
+$$
+
+
+$$
+\lambda_2=\sigma^2_fp\sigma^2_b+\sigma^2_\epsilon
+$$
+
+
+$$
+\lambda_3=\sigma^2_\epsilon
+$$
+
+Aspectos relevantes:
+
+* El precio del factor asociado con el primer factor (siendo el que más aporta en la explicaciónd de la varianza de los retornos y el más grande) es el que se estima con mayor presición.
+
+* El segundo y el resto de los factores principales explican la varianza de los valores de los retornos no de manera significativo, siendo la razón de que el primer factor tenga mayor relevancia.
+
+* Los primeros valores propios incrementan conforme aumenta el número de valores (acciones).
+
+
+```{r Teorico}
+
+lambda_1 <- sapply(i, function(i) (sigma2_f*i)*((b^2)*k+sigma2_b) + sigma_e)
+lambda_2 <- sapply(i, function(i) sigma2_f*i*sigma2_b + sigma_e)
+lambda_3 <- sapply(i, function(i) sigma_e)
+
+teorico <- data.frame(P = seq(50,200,1), lambda1 = lambda_1,
+                lambda2 = lambda_2,lambda3 = lambda_3)
+
+plot0 <- teorico %>%  ggplot() + geom_line(aes(x= P, y = lambda1, col="lambda_1")) +
+  geom_line(aes(x= P, y = lambda2, col="lambda_2")) +
+  geom_line(aes(x= P, y = lambda3, col="lambda_3")) +
+  labs(title = "Teorico", x = "# seguros en portafolio" , y = "Eigenvalues", color = "Lambdas\n") 
+
+
+```
+
+```{r plot1, fig.cap="Valores propios teoricos como funcion del  portafolio"}
+knitr::opts_chunk$set(fig.pos = 'H')
+plot0
+```
+
+
+
+
+
+
+
+
+
+## Modelo Empírico 1
+
+Se presenta el resultado previo a la simulación de los retornos, donde solo se observa la variaciones en el número de valores (acicciones) en un portafolio.
+
+```{r Empirico 1}
+
+Matriz_1 <- matrix(0L, length(seq(50,200,1)), 5)
+for(i in seq(50,200,1)){
+  F_ <- matrix( rnorm(n*k,mean=0,sd= sigma2_f %>% sqrt), n, k) 
+  L <- matrix( rnorm(i*k,mean=b,sd= sigma2_b %>% sqrt), i, k)
+  E <- matrix( rnorm(i*n,mean=0,sd= sigma_e %>% sqrt), i, n)
+  R <- L%*%t(F_) + E
+  Sigma <- (R%*%t(R))/n
+  Valores <- Sigma %>% eigen()
+  valores_propios <- sort(Valores$values, decreasing = TRUE)[1:5]
+  Matriz_1[i-49,] <- valores_propios
+}
+
+
+X <- data.frame(P = seq(50,200,1), lambda1 = Matriz_1[,1],
+           lambda2 = Matriz_1[,2],lambda3 = Matriz_1[,3],
+           lambda4 = Matriz_1[,4],lambda5 = Matriz_1[,5])
+
+plot1 <- X %>%  ggplot() + geom_line(aes(x= P, y = lambda1, col="lambda_1")) +
+  geom_line(aes(x= P, y = lambda2, col="lambda_2")) +
+  geom_line(aes(x= P, y = lambda3, col="lambda_3")) +
+  geom_line(aes(x= P, y = lambda4, col="lambda_4")) +
+  geom_line(aes(x= P, y = lambda5, col="lambda_5")) +
+  labs(title = "The journal of finance", x = "# seguros en portafolio" , y = "Eigenvalues", color = "Lambdas\n") 
+
+
+```
+
+```{r plot2, fig.cap="Valores propios empiricos como funcion del  portafolio"}
+knitr::opts_chunk$set(fig.pos = 'H')
+plot1
+```
+
+
+Se puede observar que inclusive sin resolver el problema de muestras pequeñas (resolver la simulación), el primer valor propio diverge del resto conforme el número de acciones incrementa en el portafolio (rango de la matriz de varianza de los retornos, o el número de filas de las cargas de los factores).
+
+Se espera que realizando el montecarlo se pueda mejorar los resultados empiricos.
+
+
+
+
+
+## Modelo Empírico 2
+
+En esta sección se realiza la simulación 100 veces de la matriz de retornos, estimando la matriz de covarianza y sus valores propios, tomando el valor medio de las 100 simulaciones para cada número de valores (acciones).
+
+```{r Empirico2}
+b <- 1
+sigma2_b <- 0.01 
+sigma2_f <- 0.000158
+sigma_e <- 0.0045
+n <- 80
+k <- 4
+i <- c(50:200)
+
+Matriz <- matrix(0L, length(seq(50,200,1)), 5)
+LOWER <- matrix(0L, length(seq(50,200,1)), 5)
+UPPER <- matrix(0L, length(seq(50,200,1)), 5)
+for(i in seq(50,200,1)){
+  R_ <- matrix(0L, 100, 5)
+  for(j in 1:100){
+    F_ <- matrix( rnorm(n*k,mean=0,sd= sigma2_f %>% sqrt), n, k) 
+    L <- matrix( rnorm(i*k,mean=b,sd= sigma2_b %>% sqrt), i, k)
+    E <- matrix( rnorm(i*n,mean=0,sd= sigma_e %>% sqrt), i, n)
+    R <- L%*%t(F_) + E
+    Sigma <- (R%*%t(R))/n
+    Valores <- Sigma %>% eigen()
+    valores_propios <- sort(Valores$values, decreasing = TRUE)[1:5]
+    R_[j,] <- valores_propios
+    
+  }
+  Low <-  quantile(R_[,1], .25)
+  Upp <-  quantile(R_[,1], .75)
+  vp <- colMeans(R_)
+  Matriz[i-49,] <- vp
+  LOWER[i-49,] <- Low
+  UPPER[i-49,] <- Upp
+}
+
+X_2 <- data.frame(P = seq(50,200,1), lambda1 = Matriz[,1],
+                lambda2 = Matriz[,2],lambda3 = Matriz[,3],
+                lambda4 = Matriz[,4],lambda5 = Matriz[,5],
+                L = LOWER[,1], U = UPPER[,1])
+
+
+
+plot2 <- X_2 %>%  ggplot() + geom_line(aes(x= P, y = lambda1, col="lambda_1")) +
+  geom_line(aes(x= P, y = lambda2, col="lambda_2")) +
+  geom_line(aes(x= P, y = lambda3, col="lambda_3")) +
+  geom_line(aes(x= P, y = lambda4, col="lambda_4")) +
+  geom_line(aes(x= P, y = lambda5, col="lambda_5")) +
+  geom_line(aes(x= P, y = L), linetype = "dashed", colour = "black") +
+  geom_line(aes(x= P, y = U), linetype = "dashed",  colour = "black") +
+  labs(title = "The journal of finance", x = "# seguros en portafolio" , y = "Eigenvalues", color = "Lambdas\n") 
+
+
+```
+
+
+```{r plot3, fig.cap="Valores propios empiricos simulados como funcion del portafolio"}
+knitr::opts_chunk$set(fig.pos = 'H')
+plot2
+```
+
+
+Explicando comportamiento :
+
+En la figura se puede observar los valores propios en función del número de valores en un portafolio (de 50 a 200). Se observa en la figura que el valor propio más largo es significativamente largo respecto al resto de los valores propios y parece que incrementa sin límite conforme el número de valores aumenta.
+
+Lo que puede sorprende es que el valor de los valores propios son más largos de lo que el autor esperaba, ya que mencionan que practicamente deben ser cero, pero se observa que tienden a incrementar conforme el número de valores aumenta
+
+Interpretación:
+
+El primer factor principal tiene la interpretación de ser el rendimiento de un índice de mercado igualmente ponderado, dado a que explica mayormente la varianza
+
+El segundo y el resto de factores principales explican la varianza de los retornos de los valores que de otra manera no se explican por los retornos en el índice, por lo que no es sorprendente que el primer factor principal explique una gran fracción de la varianza del retorno de los valores.
+
+## Resultados
+
+Los resultados están en términos de lo argumentado en el paper, que hace mención el autor, sobre la diferencia en la estimación teórica respecto a la empirica.
+
+```{r Resultado, fig.cap="Valores propios empiricos y teoricos como funcion del tamaño de portafolio"}
+knitr::opts_chunk$set(fig.pos = 'H')
+plot2 + geom_line(aes(x= teorico$P, y = teorico$lambda1, col="lambda_1 teorica")) +
+  geom_line(aes(x= P, y = lambda2, col="lambda_2 teorica")) +
+  geom_line(aes(x= P, y = lambda3, col="lambda_3 teorica")) +
+  geom_line(aes(x= P, y = L), linetype = "dashed", colour = "black") +
+  geom_line(aes(x= P, y = U), linetype = "dashed",  colour = "black") +
+  labs(title = "Teórico vs Empírico", x = "# seguros en portafolio" , y = "Eigenvalues", color = "Lambdas\n") 
+
+```
+
+Se observa que el valor teoríco del primer valor propio se encuentra por debajo del primer valor propio empírico. Respecto a los otros valores propios teoricos distintos al primero se observan que se aproximan a los valores propios empíricos distintos del primero. 
+
+
+
+Conclusión:
+
+El primer factor es aquel que explica mejor el valor (acción) de los retornos. Mediante la simulación se logra observar que el primer valor propio crece conforme el número de acciones aumenta, dando cada vez mayor relevancia al primer factor en término de varianza explicada, y por lo tanto, basta con un factor para aproximar con los factores a la matriz de covarianza de los retornos.
+
+
+
