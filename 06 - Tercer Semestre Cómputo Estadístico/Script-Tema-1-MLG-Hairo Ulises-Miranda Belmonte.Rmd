@@ -1,0 +1,887 @@
+---
+fontsize: 11pt
+title: Tarea-1-MLG-Hairo Ulises-Miranda Belmonte
+author: Hairo Ulises Miranda Belmonte
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+#abstract: One or two sentences describing it all.
+header-includes:
+  \usepackage{graphicx}
+  \usepackage{color}
+  \usepackage{fancyhdr}
+  \usepackage{sectsty}
+  \usepackage{animate} 
+  \pagestyle{fancy}
+  \usepackage{setspace}
+  \usepackage{booktabs}
+  \usepackage{float}
+  \usepackage[ruled,vlined,linesnumbered,noresetcount]{algorithm2e}
+  \renewcommand{\figurename}{Figura}
+  \renewcommand{\tablename}{Tabla}
+  \SetKwInput{KwData}{Datos}
+  \SetKwInput{KwResult}{Resultado}
+  \SetAlgorithmName{Algoritmo}{algoritmo}{Lista de algoritmos}
+  \fancyhead[R]{CENTRO DE INVESTIGACIÓN EN MATEMÁTICAS- UNIDAD MTY}
+  \pretitle{\centering \textsc{CENTRO DE INVESTIGACIÓN EN MATEMÁTICAS (CIMAT).\\ UNIDAD MONTERREY} \\ [5pt] \rule{\linewidth}{0.5 pt} \\[0.5 cm] \vspace{\droptitle}\bigskip \centering\huge}
+  \posttitle{\bigskip  \par\rule{\linewidth}{2 pt}}
+  \preauthor{\centering\large}
+  \postauthor{\par}
+  \predate{\centering\large}
+  \postdate{\bigskip  \par}
+  \allsectionsfont{\centering \normalfont\scshape}
+  \numberwithin{equation}{section} 
+  \numberwithin{figure}{section} 
+  \numberwithin{table}{section}
+  \setlength{\headheight}{27pt}
+  \onehalfspace
+output: 
+  pdf_document:
+    number_sections: TRUE
+    keep_tex: TRUE
+    #toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,out.width='60%', fig.pos= "ht",fig.align='center',message=FALSE,  warning = FALSE)
+library(magrittr)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(jtools)
+library(pander)
+library(effects)
+library(vcd)
+```
+
+Ejercicio 1
+-----------------
+
+**Los siguientes datos tomados de Little (1978) corresponden a 1607 mujeres casadas
+y fertiles entrevistadas por la Encuesta de Fertilidad Fiji de 1975. Los datos
+estan clasificados por edad, nivel de educación, deseo de tener hijos y el uso de
+anticonceptivos. En este ejemplo se considera la anticoncepción  como variable
+dependiente y a las demás como predictoras. Todas las predictoras son variables
+categoricas. El objetivo es describir cómo el uso de métodos anticonceptivos varía según la edad, el nivel de educación y el deseo de tener más hijos.**
+
+**a) Ajuste un modelo lineal a los datos**
+
+Base de datos:
+
+```{r Datos}
+
+# Vector de datos
+Edad <- c(rep("<25",4),rep("25-29",4),rep("30-30",4),rep("40-40",4))
+
+Educacion <- rep(c("Baja","Baja","Alta","Alta"),4)
+
+Hijos <- rep(c("Si","No"),8)
+
+Anticonceptivos <- matrix(c(53,6,10,4,212,52,50,10,60,14,19,10,155,54,65,27,112,33,
+77,80,118,46,35,6,68,78,46,48,8,8,12,31),ncol = 2, byrow = T)
+
+# Data frame
+Datos <- data.frame(Edad,Educacion,Hijos,Anticonceptivos)
+colnames(Datos)[4] <- "Si"
+colnames(Datos)[5] <- "No"
+
+
+pander(Datos, style='rmarkdown' )
+```
+
+Modelo de regresión lineal:
+
+$$Anticonceptivos_{si} = \beta_0 + Edad_{25-29} + Edad_{30-39}+ Edad_{40-49} + Edad_{si} + Educacion_{Baja} + \epsilon$$
+$\beta_0$: intercepto, captura a las mujeres de menos de 25 años, con educación alta, y sin deseo de tener hijos.
+
+El resto de los parámetros son variables dummies con $k -1$ factores, donde $k$ varia respecto a la variable. 
+
+
+El resultado del ajuste de la regresión lineal es el siguiente:
+
+```{r Modelo2}
+
+modelo_lineal2 <- lm(Si ~ Edad + Educacion + Hijos, data = Datos)
+pander( summary(modelo_lineal2) )   
+```
+
+Se pretende observar la relación entre las mujeres que hacen uso de métodos anticonceptivos, respecto a su rango de edad, su nivel de educació y el deseo de tener hijos.
+
+
+**Significancia:** 
+
+
+Evaluando la significancia del los parámetros se puede inferir a las covariables que afectan el número de mujeres que sí utilizan anticonseptivos. Al .05 de significancia las variables significativas son; las mujeres que sí desean tener hijos  (de forma positiva) y ligeramente el parámetro de intercepto (de forma positiva), que captura a las mujeres que no desean tener hijos, con un nivel de educación alta y edad menor a $25$ años. 
+
+**Interpretación:**
+
+Esto quiere decir, que el número de mujeres que si utilizan anticonseptivo son aquellas que aún sienten el deseo de tener algún hijo, no obstante, dado que el intercepto es diferente de cero, podemos inferir que esas mujeres pueden ser aquellas que tienen un nivel de estudio elevado, con una edad menor a los 25. 
+
+
+
+**Ajuste del modelo:**
+
+El resultado se considera espurio por dos razones; i) la variable respuesta parece distribuirce como una bernulli; ii) El $R^2 ajustada$ - la cual penaliza el número de covariables que se agregan al modelo-, se aleja del $R^2$, indicando que alguna variable está de más, y sobre todo un mal ajuste en las covariables respecto a la variable respuesta. 
+
+Por otro lado, el valor del F-statistic es de $1.964$ con $p-value: 0.1701$, lo cual hace que el modelo en su conjunto no sea significativo, i.e., las covariables no explican al número de mujeres que sí utilizan anticonseptivos.
+
+
+
+**Intervalos de confianza de los parámetros estimados:**
+
+Se incluyen los intervalos de confianza de los parámetros estimados
+
+```{r Modelo2IC}
+
+pander( confint( modelo_lineal2 ) )
+```
+
+**Supuestos del modelo:**
+
+Se evaluan los supuestos del modelo, residuales con distribución normal, las covariables y la variable respuesta estimada no correlacionada con los residuales del modelo, y homocedasticidad en los términos de error.
+
+```{r Supuestos}
+
+library("ggpubr")
+library("gridExtra")
+library("ggfortify")
+
+diagPlot<-function(m1){
+  p1<-ggplot(m1, aes(.fitted, .resid))+geom_point()
+  p1<-p1+stat_smooth(method="loess")+geom_hline(yintercept=0, col="red", linetype="dashed")
+  p1<-p1+xlab("Valores Ajustados")+ylab("Residuales")
+  p1<-p1+ggtitle("Residuales vs Valores Ajustados")
+  
+  p2<-ggqqplot(m1$residuals) + theme_gray() + labs(title="QQ-plot",
+                                                   subtitle = "residuales")
+  
+  
+  p3<-ggplot(m1, aes(.fitted, sqrt(abs(.stdresid))))+geom_point(na.rm=TRUE)
+  p3<-p3+stat_smooth(method="loess", na.rm = TRUE)+xlab("Fitted Value")
+  p3<-p3+ylab("Root Residuales estandarizado")
+  p3<-p3+ggtitle("Scale-Location")+theme_bw()
+  
+  p4<-ggplot(m1, aes(seq_along(.cooksd), .cooksd))+geom_bar(stat="identity", position="identity")
+  p4<-p4+xlab("Obs. Number")+ylab("Cook's distance")
+  p4<-p4+ggtitle("Cook's distance")+theme_bw()
+  
+  p5<-ggplot(m1, aes(.hat, .stdresid))+geom_point(aes(size=.cooksd), na.rm=TRUE)
+  p5<-p5+stat_smooth(method="loess", na.rm=TRUE)
+  p5<-p5+xlab("Leverage")+ylab("Standardized Residuals")
+  p5<-p5+ggtitle("Residual vs Leverage Plot")
+  p5<-p5+scale_size_continuous("Cook's Distance", range=c(1,5))
+  p5<-p5+theme_bw()+theme(legend.position="bottom")
+  
+  p6<-ggplot(m1, aes(.hat, .cooksd))+geom_point(na.rm=TRUE)+stat_smooth(method="loess", na.rm=TRUE)
+  p6<-p6+xlab("Leverage hii")+ylab("Cook's Distance")
+  p6<-p6+ggtitle("Cook's dist vs Leverage hii/(1-hii)")
+  p6<-p6+geom_abline(slope=seq(0,3,0.5), color="gray", linetype="dashed")
+  p6<-p6+theme_bw()
+  
+  ggpubr::ggarrange(p1, p2, p3, p4, ncol=2, nrow=2)
+  #return(list(rvfPlot=p1, qqPlot=p2, sclLocPlot=p3, cdPlot=p4, rvlevPlot=p5, cvlPlot=p6))
+}
+
+
+diagPlot(modelo_lineal2)
+```
+
+* Gráfico superior izquierdo: se tiene a los residuales respecto a los valores ajustados, se observa que los residuales siguen el comportamiento del ajuste de la linea, por ende, se encuentran correlacionados.
+
+* Gráfico superior derecho QQplot: se puede ver que la distribución de los residuales  parecen en el centro  normal, sin embargo, no en las colas.
+
+* Gráfico Scale-Location: se observa como los residuales conforme incrementa el número de valores ajustados tienden a dispersarse, indicando heterocedasticidad, i.e., varianza no constante.
+ 
+
+* Gráfico cook's distance: nos muestra que existe un valor que se encuentra influenciando el resultado del modelo.
+
+En resumen no se cumplen los supuestos de regresión lineal
+
+**Análisis de varianza:**
+
+
+Realizamos el análisis de varianza para observar si las covariables tienen relación con la respuesta (i.e., edad, educación, e hijos se relacionan con el uso de anticonceptivos). La hipotesis nula está dada en términos de que las covariables son independientes a la variable respuesta.
+
+
+```{r Modelo2Anova}
+pander( anova(modelo_lineal2))
+```
+
+A un nivel del $0.05$ de significancia, se tiene que solo el efecto en conjunto de la variable, "deseo de tener hijos", afecta al número de mujeres que utilizan anticonceptivos.
+
+**Supuesto de Homogeneidad en las pendientes:** 
+
+El análisis ANCOVA exige el supuesto de homogenidad en los factores de las variables, para poder ver su efecto total respecto a la variable respuesta.
+
+En el siguiente gráfico de observa la interacción de la Edad respecto al número de mujeres que utilizan anticonceptivos teniendo en cuenta los factores de la variable educación. Si se observa el gráfico la pendiente de los factores son: 
+
+
+```{r Homogenidad1}
+Datos %>% 
+  ggplot() +
+  aes(x = Edad, color = Educacion, group = Educacion, y = Si) +
+  stat_summary(fun.y = mean, geom = "point") +
+  stat_summary(fun.y = mean, geom = "line") + 
+  ggtitle("Test Homogeneidad") +
+  ylab("MEDIA DE ANTICONCEPTIVO_SI")
+```
+
+La edad respecto al número de mujeres que utilizan anticonceptivos evaluando la pendiente de los factores de la variable "deseos de tener hijos":
+
+```{r Homogenidad2}
+
+Datos %>% 
+  ggplot() +
+  aes(x = Edad, color = Hijos, group = Hijos, y = Si) +
+  stat_summary(fun.y = mean, geom = "point") +
+  stat_summary(fun.y = mean, geom = "line") + 
+  ggtitle("Test Homogeneidad") +
+  ylab("MEDIA DE ANTICONCEPTIVO_SI")
+
+```
+
+Se puede observar que las pendientes son distintas y no satisfacen el supuesto de pendientes homogeneas.
+
+
+**Conclusión:**
+
+Se sugiere realizar regresión por cada uno de los factores, si el interés es no capturar el efecto total de las covariables. 
+ 
+El modelo de regresión lineal no es adecuado para el componente aleatorio $Y$, el número de mujeres que utilizan anticonceptivos.
+ 
+ 
+
+**b) Ajuste un modelo de regresión logística a los datos.**
+
+Se asume que la variale respuesta $Y_i \sim Bernoulli(p_i)$
+
+**Modelo:**
+
+```{r ModeloLogit}
+
+modelo_logit1 <- glm(cbind(Si, No) ~ Edad + Educacion + Hijos, data = Datos ,family=binomial(link=logit))
+
+pander(summary(modelo_logit1))
+
+```
+
+
+**Significancia:**
+
+* El intercepto es significativo y se relaciona con el uso de anticonceptivo de manera positiva
+
+* Los distintos intervalos de los log-odss de la edad son significativos y se relacionan de forma negativa a la variable respuesta. Solo el parámetro de la mujeres con 25 a 29 años de edad es significativo al .05, el resto al .01.
+
+* El parámetro de los log-odds del deseo de sí tener hijos es significativo y se relaciona de forma positiva
+
+* El parámetro que representa el log-odds del nivel de educación baja, no es significativo.
+
+La interpretación de que sean significativo los parámetros de las covariables y su relación con el uso de anticonceptivos se menciona en el inciso e), el calculo de los odd-ratio. Aquí solo se tiene que existe una relación significativa entre la edad y el deseo de tener hijos
+
+
+
+
+**c) Compare ambos modelos.**
+
+Comparando los modelos con el análisis de varianza:
+
+**Regresión Lineal**
+```{r anovaLineal}
+pander( anova(modelo_lineal2))
+
+```
+
+
+**Regresión logísitca**
+```{r anovaLogistica}
+
+pander( anova(modelo_logit1,test="Chisq"))
+```
+
+Bajo la regresión logística se tiene significancia al 0.05 de que el efecto de las variables en su conjunto no son independientes al uso de anticonceptivos.
+
+Evaluando el críterio AIC, se observa que el menor valor lo registra la regresión logistica, siendo este el mejor modelo entre los dos.
+
+```{r AIC}
+Base <- data.frame(AIC = c(AIC(modelo_lineal2),AIC(modelo_logit1)))
+rownames(Base) <- c("Lineal","Logit")
+pander( Base )
+```
+
+
+
+**d) Grafique los modelos e interprete los resultados.**
+
+Al tratarse de un modelo con 3 predictores, no se puede obtener una representación en 2D en la que se incluyan ambos predictores a la vez. Sí es posible representar la curva del modelo logístico cuando se mantiene constante uno de los dos predictores. Cabe recalcar que aquí se siguen interpretando en témino del log-odd.
+
+
+```{r plot1}
+plot(effect("Hijos", modelo_logit1), multiline = TRUE)
+```
+
+* la probabilidades de usar anticonseptivos es mayor si la mujer tiene deseos de tener un hijo.
+
+```{r plot2}
+plot(effect("Edad", modelo_logit1), multiline = TRUE)
+```
+
+* conforme la edad de la mujer va avanzando la probabilidad de utilizar anticonceptivos disminuye.
+
+```{r plot3}
+plot(effect("Educacion", modelo_logit1), multiline = TRUE)
+```
+
+* El nivel de educación no afecta en el uso de anticonceptivos.
+
+
+
+**e) Calcule el odds-ratio para el modelo de regresión logística y de su interpre-tación.**
+
+$$\hat O=\frac{odds_{x+1}}{odds_x}=e^\beta$$
+
+Se aplica exponencial a los términos en logaritmo, como resultado tenemos los odds ratios; también se agregan los intervalos de confianza de los parámetros (al 95%) estimados del modelo, los cuales se le aplica exponencial para su interpretación.
+
+
+```{r ModeloLogitIC}
+lreg.or <-exp(cbind(OR = coef(modelo_logit1), confint(modelo_logit1)))
+pander( round(lreg.or, digits=4))
+
+
+```
+
+**Interpretación**
+
+* El ser mujer entre los 25 a 29 años de edad reduce el uso de anticonceptivos en 34% aproximadamente.
+
+* El ser mujer entre los 30 a 39 años reduce el uso de anticonceptivos en 50% aproximadamente.
+
+* El ser mujer entre los 40 a 49 años reduce el uso de anticonceptivos en 80% aproximadamente.
+
+* El ser mujer  y tener una educación a niveles escolares bajos, reduce el uso de anticonceptivos solo el 1% aproximadamente.
+
+* El ser mujer y tener deseos de hijos incrementa en 54% el uso de anticonceptivos, aproximadamente.
+
+* El intercepto que representa a las mujeres de menos de 25 años con un nivel de educación alto y el deseo de no tener hijos, incrementa el de manera muy significativa el uso de anticonseptivos.
+
+Esto último hace sentido, ya que al ser una mujer preparada y de temprana edad, y sin deseos de tener hijos, hace que dicha mujer se cuide, haciendo uso de anticonceptivos.
+
+
+
+**f ) Verifique la validez del modelo de regresión logística**
+
+Se verifica la validez de la regresión logística utilizando la prueba de la razón de verosimilitud, con hipótesis nula: el modelo reducido es el adecuado. Por lo tanto, se busca rechazar la hipótesis nula.
+
+**Likelihood Ratio test:**
+
+```{r LR}
+pander( anova(modelo_logit1,test="Chisq"))
+
+```
+
+Se observa que a un nivel del 0.05, al menos una de las variables es diferente de cero, por lo tanto, se tiene evidencia para rechazar la hipótesis nula.
+
+
+```{r supuestos1}
+diagPlot(modelo_logit1)
+```
+
+* Se obserba que se cumple lo dicho para los modelos lineales generalizados, la distribución no proviene de una normal y los datos presentan varianza no constante.
+
+
+En conclusión, el modelo en conjunto sí es significativo y, acorde a los $p-values$ mostrados  también es significativa la contribución al modelo solo para los predictores de la edad y el deseo de tener hijos.
+
+
+
+Ejercicio 2
+-----------------
+
+**Un estudio quiere establecer un modelo que permita calcular la probabilidad de obtener una matricula de honor al final del bachillerato en función de la nota que se ha obtenido en matemáticas. La variable matricula está codificada como 0 si no se tiene matricula y 1 si se tiene. El archivo Bachilleres.txt contiene los datos para el estudio.**
+
+Primeras 6 observaciones de la base de datos
+
+```{r Datos_bachilleres}
+
+Bachilleres <- read.table( "Bachilleres.txt",  sep = ",", fill=TRUE, header = TRUE) 
+pander( Bachilleres %>% head() )
+```
+
+**Descriptivo de la base:**
+
+```{r Descriptivos}
+ggplot(data = Bachilleres, aes(x = matricula, y = matematicas, color = as.factor(matricula))) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.1) +
+  theme_bw() +
+  theme(legend.position = "null")
+```
+
+* Varianza distinta entre,  tener o no tener, matricula de honor respecto a las notas de matemáticas.
+
+* Los alumnos que no tienen matrícula de honor sus notas promedio en matemáticas están sobre el 50; caso contrario, los que si cuentan con matrícula de honor sus notas en matemáticas se encuentran por arriba del 60.
+
+* Se observan valores atípicos en las notas de matemáticas de estudiantes que no tienen cuadro de honor.
+
+**Distribución de la variable respuesta**
+
+* Las notas bajas se relacionana más con no tener matrícula de honor
+
+
+```{r Distribucion}
+# Representación gráfica del modelo.
+ggplot(data = Bachilleres, aes(x = matematicas, y = matricula)) +
+  geom_point(aes(color = as.factor(matricula)), shape = 1) +
+  theme_bw()  +
+  labs(title = "Distribución matricula de honor",
+       y = "Probabilidad default") +
+  theme(legend.position = "none")
+
+```
+
+
+
+**a) Ajuste un modelo de regresión logística a los datos.**
+
+Ajuste del modelo
+
+$$matricula = \beta_0 + matematicas_{notas}$$
+
+donde:
+
+$\beta_0$: parámetro de los alumnos cuya nota en matemáticas es de cero
+
+
+```{r Modelo_logistico}
+
+modelo_logit2 <- glm(matricula ~ matematicas, data = Bachilleres ,family=binomial(link=logit))
+
+pander(summary(modelo_logit2))
+
+```
+
+**Significancia**
+ 
+ * El log-odd del intercepto es significativo y se relaciona de manera negativa con tener matrícula de honor.
+ 
+ * El log-odd de las notas en matemáticas es significativo y se relaciona de forma positiva con tener matrícula de honor
+
+**Interpretación log-odds**
+
+* log-odd del intercepto, indica que la intersección es el valor esperado del logaritmo de odds de que algún estudiante obtenga una matrícula teniendo cero en la nota de matemáticas.
+
+
+* log-odd del parámetros de la nota en matemática, por cada unidad que se incrementa la variable matemáticas (la nota) se espera que el log-odds de la variable matrícula de honor se incremente en promedio 0.1563404 unidades.
+ 
+La interpretación en términos del odds ratio se presenta en la pregunta c). 
+
+
+La Null deviance es la desviación  para el modelo que no depende de ninguna variable.
+La Residual deviance es la diferencia entre la desviación del modelo que no depende de
+ninguna variable menos la correspondiente al modelo que incluye a la variable width
+
+La diferencia entre ambas se distribuye como una distribución chi-cuadrado, el cual se vera en la prueba del test de verosimilitud.
+
+
+**b) Grafique el modelo e interprete los resultados.**
+
+```{r Modelo_logistico_distribucion}
+
+ggplot(data = Bachilleres, aes(x = matematicas, y = matricula)) +
+  geom_point(aes(color = as.factor(matricula)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo_logit2,
+                                          newdata = data.frame(matematicas = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión logística",
+       y = "Probabilidad default") +
+  theme(legend.position = "none")
+
+```
+
+Se observa la transformación de los datos y su ajuste con la función sigmoide, incluso con el modelo logístico se observa algo de confusión con las observaciones que se encuentran en la nota de matemáticas de valor 50 a 60. 
+
+
+
+**c) Calcule el odds-ratio para este modelo y de su interpretación.**
+
+Se aplica exponencial a los parámetros del modelo (log-odds), y a los intervalos de confianza (al 95%)
+
+```{r odds_ratio}
+lreg.or2 <-exp(cbind(OR = coef(modelo_logit2), confint(modelo_logit2)))
+pander( round(lreg.or2, digits=4))
+
+
+```
+
+
+**Interpretacion**
+
+* los odds rate son muy bajos en el intercepto, lo que corresponde a una probabilidad de obtener una matrícual de 1e-04 cuando se tiene  en matemáticas una nota de cero.
+ 
+* el odds rate del parámetro de matemáticas indica que  por cada unidad que se incrementa la variable matemáticas (notas), los odds de obtener matrícula de honor se incremente en promedio 1.169 unidades.
+
+Una forma distinta de interpretar, y más general, es:
+
+* Tener una nota en matématicas diferente de cero incrementa la probabilidad de tener una matrícula de honor en $.169\%$
+
+**d) Verifique la validez del modelo.**
+
+Utilizando el test de la razón de verosimilitud, se tiene que la variable, notas en matemáticas, tiene relación respecto al tener una matrícula de honor, esto se observa dado al $p-valor$, el cual es muy pequeño, rechazando la hipótesis nula de no relación entre covariables y variable respuesta.
+
+
+```{r Modelo_LR}
+pander( anova(modelo_logit2,test="Chisq"))
+```
+
+
+
+
+
+**e) Compare los valores predichos con las observaciones y explique.**
+
+Se utiliza la matriz de coonfusión para obtener el número de predicciónes correctas.
+
+```{r confusion}
+
+predicciones <- ifelse(test = modelo_logit2$fitted.values > 0.5, yes = 1, no = 0)
+matriz_confusion <- table(modelo_logit2$model$matricula, predicciones,
+                          dnn = c("observaciones", "predicciones"))
+pander( matriz_confusion )
+
+```
+
+```{r confusion2}
+mosaic(matriz_confusion, shade = T, colorize = T,
+       gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
+
+```
+
+El modelo es capaz de clasificar correctamente:
+
+$$\frac{144+22}{140+22+27+11}=.81$$
+
+Es decir, el $81%$ de las observaciones utilizando los datos de entrenamiento
+
+
+**Conclusión**
+
+El modelo logístico creado para predecir la probabilidad de que un alumno obtenga matrícula de honor a partir de la nota de matemáticas es en conjunto significativo acorde al Likelihood ratio (p-value = 8.717591e-14). El p-value del predictor matematicas es significativo (p-value = 1.029e-09). 
+
+Modelo:
+$$logit(matriculaHonor) = -9.794 + 0.1563*NotaMate$$
+
+$$P(matriculaHonor) = \frac{e^{-9.794 + 0.1563*NotaMate}}{1+e^{-9.794 + 0.1563*NotaMate}}$$
+
+
+Ejercicio 3
+-----------------
+
+**El archivo Cangrejos.txt, contiene los datos de cangrejos herradura. Entre los cangrejos herradura se sabe que cada hembra tiene un macho en su nido, pero puede tener más machos concubinos. Se considera que la variable respuesta es el número de concubinos (Satellite) y las variables explicativas son: color (Color ), estado de la espina central (Spine), peso (Weight) y anchura del caparazón (Width).**
+
+Base de datos, primeros 6 elementos:
+
+```{r base_poisson}
+
+Cangrejo <- read.table( "Cangrejos.txt",  sep = ",", fill=TRUE, header = TRUE) 
+pander( Cangrejo %>% head() )
+```
+
+Observamos la relación del número de concubinos respecto al ancho del caparazón.
+
+* Se agregan aquellos cangrejos que tienen el mismo cm de anchura del caparazon, de esta forma los que dicen 1 son únicos, 2 que existen dos con esas medidas, y así.
+
+
+```{r base_poissone}
+dimnames( Cangrejo )[[2]] = c ( "color" ,"spine" ,"width" ,"satell" ,"weight" )
+
+plot.tabla = aggregate(rep(1 , nrow( Cangrejo )),list( Sa = Cangrejo$satell , W = Cangrejo$width ), sum)
+
+plot.tabla %>% as.data.frame() %>% ggplot(aes(x = W, y = Sa, label=plot.tabla$x %>% as.character())) +
+  geom_text() + xlab("Ancho (cm)") +  ylab("Número de Concubinos")
+
+```
+
+* Se observa que el mayor número de concubinos que tiene una hembra se relaciona a que su ancho de caparazón sea alrededor de 25 a 30 cm
+
+
+**En un primer análisis solo considere la anchura del caparazón como variable ex-plicativa.**
+
+**Modelo**
+$$Satellite = \beta_0 + Width$$
+
+
+**a) Ajuste un modelo de regresió de Poisson a los datos.**
+
+Para el modelo de regresión de poisson se utiliza una función enlace del tipo logaritmo. Esto de acuerdo Raymundo H., Douglas, C., Geoffrey, V., y Timothy, J. (2010). Generalized Linear Models: with applications in engineering and the sciences.
+
+```{r modelo_poisson}
+
+modelo_poisson <- glm(satell ~  width , family = poisson(link = log), data = Cangrejo)
+pander( summary(modelo_poisson))
+```
+
+
+* La Null deviance es la desviaciónn para el modelo que no depende de ninguna variable.
+
+* La Residual deviance es la diferencia entre la desviación del modelo que no depende de
+ninguna variable menos la correspondiente al modelo que incluye a la variable width
+
+* La diferencia entre ambas se distribuye como una distribución chi-cuadrado con 1 grado de
+libertad y permite contrastar si el coeficiente de width puede considerarse nulo.
+
+En la pregunta c) se utilizarán estos valores.
+
+```{r modelo_poisson0}
+lreg.or3 <-cbind(Parametros = coef(modelo_poisson), confint(modelo_poisson))
+pander( round(lreg.or3, digits=4))
+```
+ 
+
+**Significancia**
+
+* El intercepto es significativo y se relaciona de forma negativa con el número de concubinos que tiene una hembra cangrejo.
+
+* El parámetro de la anchura del caparazón es significativo y positivo; de este modo, un incremento en un centimentro de la anchura del caparazon aumenta en 0.164 el número de concubinos
+
+**Interpretación**
+
+
+El efecto individual de la covariables se puede observar. Se tiene que el coeficiente de la anchura del caparazon es positivo en el predictor lineal, incrementando la media del número de concubinos. De esta manera, por cada centimetros más de anchura del caparazon, el número medio de concubinos que tiene una hembra es de:
+
+```{r modelo_poisson0000}
+exponencial <-exp(modelo_poisson$coefficients)
+pander( round(exponencial, digits=4))
+```
+$$e^{Width}=1.178$$
+
+
+**b) Grafique el modelo e interprete los resultados.**
+
+
+
+```{r modelo_poisson00}
+
+ggplot(data = Cangrejo, aes(x = width, y = satell)) +
+  geom_point(aes(color = as.factor(satell)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo_poisson,
+                                          newdata = data.frame(width = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión Poisson",
+       y = "Número de concubinos") +
+  theme(legend.position = "none")
+```
+
+
+* Se puede ver que la recta de regresión no se ajusta del todo a los datos. Mostrando valores muy lejanos sobre la recta ajustada.
+
+
+```{r supuestos2}
+diagPlot(modelo_poisson)
+```
+
+* Observando los residuales se aprecia no normalidad y una varianza nada constante, lo cual es usual en los modelos glm.
+
+**c) Verifique la validez del modelo.**
+
+**Likelihood ratio test**
+
+Hacemos uso de los valores del NUll device y el residual device, como la diferencia de las desviaciones de los modelos reducidos y completos. 
+
+```{r modelo_poisson1}
+pander( modelo_poisson$null.deviance - modelo_poisson$deviance )
+```
+
+Se sabe que la diferencia entre ambas se distribuye como una chi-cuadrada con un grado de librtad, el valor de la distribución es: 
+
+```{r modelo_poisson2}
+1 - pchisq(64.91309 , 1)
+```
+
+Esto nos permite contrastar si el modelo sin parámetros es el adecuado. Dado el p-valor de la distribución es muy chico, se tiene evidencia para rechazar la hipótesis nula, y por ende, se concluye que el modelo es adecuado al utilizar la anchura del caparazon para explicar el número de concubinos de la hembra (cangrejo).
+
+Se puede utilizar la función anova en R para realizar la prueba likelihood ratio test:
+
+
+```{r Modelo_LR3}
+pander( anova(modelo_poisson,test="Chisq"))
+```
+
+Se puede rechazar claramente la hipótesis nula. Hay un aportación significativa de la
+anchura del caparazón respecto a el número de concubinos.
+
+
+
+**d) Realice el mismo procedimiento con las variables explicativas restantes (color, estado de la espina central y peso). ¿Cuál de ellas resulta más explicativa para el modelo? ¿La original o alguna de las restantes? Explique por que.**
+
+
+**Modelo**
+$$Satellite = \beta_0 + Color$$
+
+```{r modelo_poisson_2}
+
+modelo_poisson_2 <- glm(satell ~  color , family = poisson(link = log), data = Cangrejo)
+pander( summary(modelo_poisson_2))
+```
+
+Se tiene que el coeficiente del color es negativo en el predictor lineal, disminiyendo la media del número de concubinos. De esta manera, depende el tipo de color que sea, el número medio de concubinos que tiene una hembra es de:
+
+```{r modelo_poisson_2_1}
+exponencial_2 <-exp(modelo_poisson_2$coefficients)
+pander(exponencial_2)
+```
+
+$$e^{color}=0.7611$$
+
+```{r modelo_poisson_2_2}
+
+ggplot(data = Cangrejo, aes(x = color, y = satell)) +
+  geom_point(aes(color = as.factor(satell)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo_poisson_2,
+                                          newdata = data.frame(color = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión Poisson",
+       y = "Número de cuncubinos",
+       x = "color") +
+  theme(legend.position = "none")
+```
+
+* El ajuste no se observa bien, ya que color es una variable con categorías.
+
+```{r supuestos3}
+diagPlot(modelo_poisson_2)
+```
+
+* Observando los residuales vemos su comportamiento, los cuales no son los de observaciones normales, con una estructura de varianza heterocedastica.
+
+* En el gráfico de coock distance observamos valores que infliyen el desempeño de la regresión poisson.
+
+
+
+```{r modelo_poisson_2_3}
+pander( anova(modelo_poisson_2,test="Chisq"))
+```
+
+Se tiene evidencias suficiente para rechazar la hipótesis nula, por ende, el color que sea el cangrejo si afecta al número de concubinos que tiene la hembra.
+
+
+**Modelo**
+$$Satellite = \beta_0 + spine$$
+
+```{r modelo_poisson_3}
+
+modelo_poisson_3 <- glm(satell ~  spine , family = poisson(link = log), data = Cangrejo)
+pander( summary(modelo_poisson_3))
+```
+
+Se tiene que el coeficiente de la estado de la espina central es negativo en el predictor lineal, disminuyendo la media del número de concubinos. De esta manera, dependiendo del estado de la espina central, el número medio de concubinos que tiene una hembra es de:
+
+```{r modelo_poisson_3_1}
+exponencial_3 <-exp(modelo_poisson_3$coefficients)
+pander(exponencial_3)
+```
+
+$$e^{spine}=0.8941 $$
+
+Asumiendo que las demás covariables son constantes
+
+
+```{r modelo_poisson_3_2}
+
+ggplot(data = Cangrejo, aes(x = spine, y = satell)) +
+  geom_point(aes(color = as.factor(satell)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo_poisson_3,
+                                          newdata = data.frame(spine = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión Poisson",
+       y = "Número de concubinos") +
+  theme(legend.position = "none")
+```
+
+* AL igual que el anterior la recta no se ajusta bien a los datos categoricos.
+
+```{r supuestos4}
+diagPlot(modelo_poisson_3)
+```
+
+* Al igual que el caso anterior, los residuales no vienen de una normal y presentan varianza no constante.
+
+
+```{r modelo_poisson_3_3}
+pander( anova(modelo_poisson_3,test="Chisq"))
+```
+
+Se tiene ligera evidencias para rechazar la hipótesis nula, por ende, el estado de la espina central, sí afecta al número de concubinos que tiene la hembra.
+
+**Modelo**
+$$Satellite = \beta_0 + Weight$$
+
+```{r modelo_poisson_4}
+
+modelo_poisson_4 <- glm(satell ~  weight , family = poisson(link = log), data = Cangrejo)
+pander( summary(modelo_poisson_4))
+```
+
+
+Se tiene que el coeficiente del peso del cangrejo  es positivo y pequeño en el predictor lineal, incrementando la media del número de concubinos. De esta manera, dependiendo del peso del cangrejo, el número medio de concubinos que tiene una hembra es de:
+
+```{r modelo_poisson_4_1}
+exponencial_4 <-exp(modelo_poisson_4$coefficients)
+pander(exponencial_4)
+```
+
+$$e^{weight}=1.001 $$
+
+Asumiendo que las demás covariables son constantes
+
+
+```{r modelo_poisson_4_2}
+
+ggplot(data = Cangrejo, aes(x = weight, y = satell)) +
+  geom_point(aes(color = as.factor(satell)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo_poisson_4,
+                                          newdata = data.frame(weight = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión Poisson",
+       y = "Número de concubinos") +
+  theme(legend.position = "none")
+
+```
+
+* El ajuste mejora pero  varios puntos siguen sin ajustarse a la recta de regresión.
+
+```{r supuestos5}
+diagPlot(modelo_poisson_4)
+```
+
+* Se observa que los errores no tiene distribución normal, con errores que parecen que siguen a las predicciónes, indicando posible estructura de correlación.
+
+
+
+```{r modelo_poisson_4_3}
+pander( anova(modelo_poisson_4,test="Chisq"))
+```
+
+Se tiene evidencias suficiente para rechazar la hipótesis nula, por ende, el peso, sí afecta al número de concubinos que tiene la hembra.
+
+**¿Cuál de ellas resulta más explicativa para el modelo?**
+
+**¿La original o alguna de las restantes? Explique por que.**
+
+
+La original y el de los pesos del cangrejo. Al ajustar la recta de regresión se comportaban mejor con covariables continuas que discretas. Utilizando la prueba de verosimilitud, se descarta la variable del estado de la espina dorsal. Todos los parámetros para cada modelo fuero significativos.
+
+Para seleccionar el mejor modelo se utiliza el críterio AIC: 
+
+```{r fin}
+concubino_anchura <- AIC(modelo_poisson)
+concubino_color <- AIC(modelo_poisson_2)
+concubino_spin <- AIC(modelo_poisson_3)
+concubino_peso <- AIC(modelo_poisson_4)
+data.frame(concubino_anchura, concubino_color, concubino_spin, concubino_peso)
+
+```
+
+
+
+Como se observa el de menor valor es el modelo con covariable, pesos de los cangrejos, de esta forma, podría resultar más explicativo. Por otro lado,  tanto el ancho del caparazon como el peso pueden estár relacionados, y por ende, usar estás dos variables para estimar el número de concubinos de una hembra cangrejo, es adecuado.
