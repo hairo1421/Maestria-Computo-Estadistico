@@ -76,4 +76,5 @@ de interés; 1997 al 2014.](https://github.com/hairo1421/Maestria-Computo-Estadi
 * [Tarea 1](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%201%20Modelo%20de%20Brown.ipynb)
 * [Tarea 2](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%202%20Distribuci%C3%B3n%20de%20Wishart%20y%20Marcenko-Pastur.ipynb)
 * [Tarea 3](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%203%20Ley%20del%20semic%C3%ADrculo%20de%20Wigner%20.ipynb)
+* [Tarea 4](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%203%20Ley%20del%20semic%C3%ADrculo%20de%20Wigner%20.ipynb)
 ### Temas Selectos en Ciencia de datos (Deep Learning, NLP, Señales)
