@@ -77,5 +77,5 @@ de interés; 1997 al 2014.](https://github.com/hairo1421/Maestria-Computo-Estadi
 * [Tarea 2](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%202%20Distribuci%C3%B3n%20de%20Wishart%20y%20Marcenko-Pastur.ipynb)
 * [Tarea 3](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%203%20Ley%20del%20semic%C3%ADrculo%20de%20Wigner%20.ipynb) 
 * [Tarea 4](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%204.%20Determinante%20Jacobiano-%20determinante%20de%20Vandermonde%20%20Resolvente%20.ipynb) 
-* Tarea 5
+* [Tarea 5](https://nbviewer.jupyter.org/github/hairo1421/Maestria-Computo-Estadistico/blob/master/05%20-%20Tercer%20Semestre%20Temas%20en%20Estad%C3%ADstica/Matrices%20Aleatorias/Tarea%205%20FronteraOptimo%20Tracy-Widom-%20Hairo%20Ulises%20Miranda%20Belmonte.pdf)
 ### Temas Selectos en Ciencia de datos (Deep Learning, NLP, Señales)
